@@ -12,7 +12,7 @@
     <h1>تحليل بيانات شركة الكهرباء</h1> 
     <fieldset>
     <legend><h2>بحث أساسي</h2></legend>
-    <form action="{% url 'searchapp:results' %}"  method="post">
+    <form action="{% url 'SEC_App:analysis' %}"  method="post">
         {% csrf_token %}
         <input type="text" id='keyword' name='keyword'>
         <label for='keyword'>كلمات البحث</label><br><br>

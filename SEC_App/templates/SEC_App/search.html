@@ -6,12 +6,12 @@
     <title>تحليل بيانات شركة الكهرباء</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     {% load static %}
-    <link rel='stylesheet' type='text/css' media='screen' href=''>
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}">
     <script src="{% static 'SEC_App/search.js' %}" defer></script>
 </head>
 <body>
     <h1>تحليل بيانات شركة الكهرباء</h1> 
-    <fieldset>
+    <fieldset class='input_box'>
     <legend><h2>أساسي</h2></legend>
     <form action="{% url 'SEC_App:analysis' %}"  method="post">
         {% csrf_token %}
@@ -33,7 +33,7 @@
         <button type="submit">حلل</button>
     </fieldset>
     <br>
-    <fieldset>
+    <fieldset class='input_box'>
     <legend><h2>مخصص</h2></legend>
     <label for="start_date">الفترة من</label>
     <input type="date" id='start_date' neme='start_date' value='2021-01-01'>

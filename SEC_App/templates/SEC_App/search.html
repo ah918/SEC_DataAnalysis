@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang='ar' dir='rtl'>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>تحليل بيانات شركة الكهرباء</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    {% load static %}
+    <link rel='stylesheet' type='text/css' media='screen' href=''>
+</head>
+<body>
+    <h1>تحليل بيانات شركة الكهرباء</h1> 
+    <fieldset>
+    <legend><h2>بحث أساسي</h2></legend>
+    <form action="{% url 'searchapp:results' %}"  method="post">
+        {% csrf_token %}
+        <input type="text" id='keyword' name='keyword'>
+        <label for='keyword'>كلمات البحث</label><br><br>
+        
+        <button type="submit">حلل</button>
+    </fieldset>
+    <br>
+    <fieldset>
+    <legend><h2>بحث مخصص</h2></legend>
+        
+    </fieldset>
+    </form>
+</body>
+</html>

@@ -4,4 +4,4 @@ from django.http import HttpResponse
 # Create your views here.
 
 def search(request):
-    return render(request,'SEC_APP/search.html')
+    return render(request,'SEC_App/search.html')

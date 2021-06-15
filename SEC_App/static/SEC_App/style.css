@@ -7,3 +7,21 @@ body {
     background-color: rgb(21, 21, 43);
     color: aliceblue;
 }
+
+input, select, button {
+    border-radius: 7px;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+button {
+    background-color:seagreen;
+    color: aliceblue;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+label {
+    color: aliceblue;
+}

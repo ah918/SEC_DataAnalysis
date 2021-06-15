@@ -25,3 +25,11 @@ button {
 label {
     color: aliceblue;
 }
+
+.hide {
+    visibility: hidden;
+}
+
+.show {
+    visibility: visible;
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang='ar' dir='rtl'>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>تحليل بيانات شركة الكهرباء</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    {% load static %}
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}">
+    <script src="{% static 'SEC_App/search.js' %}" defer></script>
+</head>
+<body>
+    <h1>تحليل بيانات شركة الكهرباء</h1> 
+    <fieldset class='input_box'>
+    <legend><h2>أساسي</h2></legend>
+    <form action="{% url 'SEC_App:analysis' %}"  method="post">
+        {% csrf_token %}
+        <label for='keyword'>كلمة البحث</label>
+        <input list="keywords" id="keyword" name="keyword" />
+        <datalist id='keywords'>
+            <option value="كهرباء">
+            <option value="كهرب">
+            <option value="ألواح شمسية">
+        </datalist><br><br>
+        
+        <label for="domain">نطاق البحث</label>
+        <select name="domian" id="domain">
+            <option value="@ALKAHRABA OR @AlkahrabaCare" dir="ltr">@ALKAHRABA OR @AlkahrabaCare</option>
+            <option value="@ALKAHRABA OR @AlkahrabaCare OR keyword" dir="ltr">@ALKAHRABA OR @AlkahrabaCare OR كلمة البحث</option>
+            <option value="keyword">كلمة البحث</option>
+        </select><br><br>
+
+        <button type="submit">حلل</button>
+    </fieldset>
+    <br>
+    <fieldset class='input_box'>
+    <legend><h2>مخصص</h2></legend>
+    <label for="start_date">الفترة من</label>
+    <input type="date" id='start_date' neme='start_date' value='2021-01-01'>
+    <label for="end_date">إلى </label>
+    <input type="date" id='end_date' neme='end_date'><br><br>
+
+    <label for="start_time">الوقت من</label>
+    <input type="time" id="start_time" name="start_time">
+    <label for="end_time">إلى </label>
+    <input type="time" id="end_time" name="end_time">
+    </fieldset>
+    </form>
+</body>
+</html>

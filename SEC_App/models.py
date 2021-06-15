@@ -4,10 +4,10 @@ from django.db.models.deletion import CASCADE
 # Create your models here.
 class Request(models.Model):
     keyword = models.TextField()
-    period_start = models.DateField(null=True)
-    period_end = models.DateField(null=True)
-    time_start = models.TimeField(null=True)
-    time_end = models.TimeField(null=True)
+    period_start = models.DateField()
+    period_end = models.DateField()
+    time_start = models.TimeField()
+    time_end = models.TimeField()
     rangeOfsearch =  models.IntegerField()
     date_time = models.DateTimeField(auto_now=True)
     includeAll = models.BooleanField(default=False)

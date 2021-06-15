@@ -29,25 +29,27 @@
         
         <label for="domain">نطاق البحث</label>
         <select name="domian" id="domain">
-            <option value="@ALKAHRABA OR @AlkahrabaCare" dir="ltr">@ALKAHRABA OR @AlkahrabaCare</option>
-            <option value="@ALKAHRABA OR @AlkahrabaCare OR keyword" dir="ltr">@ALKAHRABA OR @AlkahrabaCare OR كلمة البحث</option>
-            <span class="hide" id="keyword_option"><option value="keyword">كلمة البحث</option></span>
+            <option value="0" dir="ltr">@ALKAHRABA OR @AlkahrabaCare</option>
+            <option value="1" dir="ltr">@ALKAHRABA OR @AlkahrabaCare OR كلمة البحث</option>
+            <option value="2" class="hide" id="keyword_option">كلمة البحث</option>
         </select><br><br>
 
-        <button type="submit">حلل</button>
     </fieldset>
     <br>
     <fieldset class='input_box'>
     <legend><h2>مخصص</h2></legend>
     <label for="start_date">الفترة من</label>
-    <input type="date" id='start_date' neme='start_date' value='2021-01-01'>
+    <input type="date" id='start_date' neme='start_date' value="{{placement.date|date:'Y-m-d' }}">
     <label for="end_date">إلى </label>
-    <input type="date" id='end_date' neme='end_date'><br><br>
+    <input type="date" id='end_date' neme='end_date' value="{{placement.date|date:'Y-m-d' }}"><br><br>
 
     <label for="start_time">الوقت من</label>
     <input type="time" id="start_time" name="start_time">
     <label for="end_time">إلى </label>
     <input type="time" id="end_time" name="end_time">
+
+    <button type="submit">حلل</button>
+
     </fieldset>
     </form>
 </body>

@@ -8,6 +8,19 @@
     {% load static %}
     <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}">
     <script src="{% static 'SEC_App/search.js' %}" defer></script>
+
+    <!-- jQuery Datepicker -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $( function() {
+          $( "#date_start" ).datepicker();
+          $( "#date_end" ).datepicker();
+                } );
+    </script>
+
 </head>
 <body>
     <h1>تحليل بيانات شركة الكهرباء</h1> 
@@ -23,25 +36,27 @@
             <option value="ألواح شمسية">
         </datalist>
         <select name="or_and" id="or_and" class="hide">
-            <option value="or">OR</option>
-            <option value="and">AND</option>
+            <option value=0>OR</option>
+            <option value=1>AND</option>
         </select><br><br>
         
         <label for="domain">نطاق البحث</label>
-        <select name="domian" id="domain">
-            <option value="0" dir="ltr">@ALKAHRABA OR @AlkahrabaCare</option>
-            <option value="1" dir="ltr">@ALKAHRABA OR @AlkahrabaCare OR كلمة البحث</option>
-            <option value="2" class="hide" id="keyword_option">كلمة البحث</option>
+        <select name="domain" id="domain">
+            <option value=0 dir="ltr">@ALKAHRABA OR @AlkahrabaCare OR كلمة البحث</option>
+            <option value=1 class="hide" id="keyword_option">كلمة البحث فقط</option>
         </select><br><br>
 
     </fieldset>
     <br>
     <fieldset class='input_box'>
     <legend><h2>مخصص</h2></legend>
-    <label for="start_date">الفترة من</label>
-    <input type="date" id='start_date' neme='start_date' value="{{placement.date|date:'Y-m-d' }}">
-    <label for="end_date">إلى </label>
-    <input type="date" id='end_date' neme='end_date' value="{{placement.date|date:'Y-m-d' }}"><br><br>
+    <label for="date_start">الفترة من</label>
+
+    <!-- <input type="date" id=ate_start' neme='date_start' value="{{placement.date|date:'Y-m-d' }}"> -->
+    <input class="datepicker" id="date_start" name="date_start">
+    
+    <label for="date_end">إلى </label>
+    <input class="datepicker" id="date_end" neme="date_end"><br><br>
 
     <label for="start_time">الوقت من</label>
     <input type="time" id="start_time" name="start_time">
@@ -52,5 +67,11 @@
 
     </fieldset>
     </form>
+    <script>
+        $(function () {
+          $(".datepicker").datepicker();
+        });
+      </script>
+    
 </body>
 </html>

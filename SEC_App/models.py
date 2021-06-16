@@ -8,9 +8,9 @@ class Request(models.Model):
     period_end = models.DateField(null=True)
     time_start = models.TimeField(null=True)
     time_end = models.TimeField(null=True)
-    rangeOfsearch =  models.IntegerField()
-    date_time = models.DateTimeField(auto_now=True)
-    includeAll = models.BooleanField(default=False)
+    rangeOfsearch =  models.IntegerField(choices=[(0,'@ALKAHRABA OR @AlkahrabaCare OR كلمة البحث'),(1,'كلمة البحث فقط')])
+    date_time = models.DateTimeField()
+    includeAll = models.IntegerField(default=0, choices=[(0, "OR"),(1, "AND")])
     
     """
     ----------
@@ -24,7 +24,7 @@ class Request(models.Model):
     """
     
 class Tweet(models.Model):
-    tweet_id = models.TextField(primary_key=True)
+    tweet_id = models.TextField()
     date = models.DateTimeField()
     place = models.TextField()
     tweet_text = models.TextField()

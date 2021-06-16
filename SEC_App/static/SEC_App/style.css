@@ -33,3 +33,12 @@ label {
 .show {
     visibility: visible;
 }
+
+table, th, td, ol, li {
+    border: 2px solid aliceblue;
+    padding: 5px;
+  }
+
+h2 {
+    text-align: center;
+}

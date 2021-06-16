@@ -1,0 +1,17 @@
+<html lang='ar' dir='ltr'>
+    <head>
+        <meta charset='utf-8'>
+        <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+        <title>تحليل بيانات شركة الكهرباء</title>
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        {% load static %}
+        <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}">
+    </head>
+    <body>
+        <form action="{% url 'SEC_App:search' %}" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="حلل">
+        </form>
+    </body>
+</html>

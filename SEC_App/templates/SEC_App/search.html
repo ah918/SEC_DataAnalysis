@@ -16,20 +16,35 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
         $( function() {
-          $( "#date_start" ).datepicker();
-          $( "#date_end" ).datepicker();
-                } );
+          $("#end_period").datepicker();
+          $("#period_start").datepicker();
+        } );
     </script>
 
+    <!-- dots  -->
+    <link href="{% static 'SEC_App/node_modules/three-dots/dist/three-dots.css' %}" rel="stylesheet">
+
+    <!-- Tajawal font -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal&display=swap" rel="stylesheet">
+
 </head>
+<div id='loading-wrapper'>
+    <div id='loading-wrapper-dots'><div class="dot-pulse"></div></div>
+    <br><br>
+</div>
+<div id='loading-wrapper-h3'>جمع وتحليل التغريدات</div>
 <body>
+    
+
+    <div id='full-page'>
     <h1>تحليل بيانات شركة الكهرباء</h1> 
     <fieldset class='input_box'>
     <legend><h2>أساسي</h2></legend>
-    <form action="{% url 'SEC_App:analysis' %}"  method="post">
+    <form action="{% url 'SEC_App:analysis' %}"  method="post" onSubmit="loadingPage()">
         {% csrf_token %}
         <label for='keyword'>كلمة البحث</label>
-        <input list="keywords" id="keyword" name="keyword" onkeypress="keywords()"/>
+        <input list="keywords" id="keyword" name="keyword" onKeypress="keywords()"/>
         <datalist id='keywords'>
             <option value="كهرباء">
             <option value="كهرب">
@@ -50,14 +65,14 @@
     <br>
     <fieldset class='input_box'>
     <legend><h2>مخصص</h2></legend>
-    <label for="date_start">الفترة من</label>
 
+    <label for="period_start">الفترة من</label>
     <!-- <input type="date" id=ate_start' neme='date_start' value="{{placement.date|date:'Y-m-d' }}"> -->
-    <input class="datepicker" id="date_start" name="date_start">
+    <input id="period_start" name="period_start">
     
-    <label for="date_end">إلى </label>
-    <input class="datepicker" id="date_end" neme="date_end"><br><br>
-
+    <label for="end_period">إلى </label>
+    <input id="end_period" name="end_period">
+    <br><br>
     <label for="start_time">الوقت من</label>
     <input type="time" id="start_time" name="start_time">
     <label for="end_time">إلى </label>
@@ -67,11 +82,7 @@
 
     </fieldset>
     </form>
-    <script>
-        $(function () {
-          $(".datepicker").datepicker();
-        });
-      </script>
+    </div>
     
 </body>
 </html>

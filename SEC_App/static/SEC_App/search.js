@@ -26,3 +26,16 @@ function keywords(){
         keyword_option.classList.remove('show');
     }
 }
+
+function loadingPage(){
+    div = document.getElementById('loading-wrapper');
+    div.style.display = "block" ;
+
+    h3 = document.getElementById('loading-wrapper-h3');
+    h3.style.display = "block" ;
+
+    body = document.getElementById("full-page");
+    body.style.display = "none" ;
+
+    return true;
+}

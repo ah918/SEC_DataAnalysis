@@ -3,9 +3,10 @@
     border-radius: 20px;
 }
 
-body {
+body, html {
     background-color: rgb(21, 21, 43);
     color: aliceblue;
+    font-family: 'Tajawal', sans-serif;
 }
 
 input, select, button {
@@ -35,10 +36,32 @@ label {
 }
 
 table, th, td, ol, li {
-    border: 2px solid aliceblue;
+    border: 2px solid #f0f8ff;
     padding: 5px;
   }
 
 h2 {
     text-align: center;
 }
+
+#loading-wrapper{
+    display: none;
+    background-color: rgb(21, 21, 43);
+    width: 100%;
+    right: 49%;
+    transform: translateX(-49%);
+    margin-top: 20%;
+}
+
+#loading-wrapper-h3 {
+    display: none;
+    font-size: large;
+    text-align: center;
+    margin-top: 5%;
+} 
+
+/* #loading-wrapper-dots {
+    right: 50%;
+    transform: translateX(-50%);
+}
+*/

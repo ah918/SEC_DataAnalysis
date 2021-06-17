@@ -1,17 +1,17 @@
 from django.http.response import HttpResponseRedirect
 from SEC_App.forms import RequestForm
-from django.db.models.fields import NullBooleanField
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Request, Tweet
 from django.utils import timezone
-import datetime
 import pandas as pd
+import datetime
 
 import twint
 import nest_asyncio
 nest_asyncio.apply()
 # Create your views here.
+
 
 def twitter_search(keywords , Since = None, Until = None ):
     c = twint.Config()
@@ -69,20 +69,27 @@ def analysis(request):
         else:
             keyword = ' OR '.join(keywords_list) 
     
-    period_start = request.POST.get('date_start', None) #"{{placement.date|date:'Y-m-d' }}"
-    if period_start != None:   
+    period_start = request.POST.get('period_start', None) if request.POST.get('period_start', None) != "" else None #"{{placement.date|date:'Y-m-d' }}"
+    if period_start != None: 
         period_start = period_start[6:] + "-" + period_start[:2] + "-" + period_start[3:5]
+        period_start_date = datetime.date(int(period_start[0:3]),int(period_start[5:6]),int(period_start[8:]))
+    if period_start_date > timezone.now().date():
+        period_start = None  
 
-    period_end = request.POST.get('date_end', None) #request.POST['end_date']
+    period_end = request.POST.get('end_period', None)  if request.POST.get('end_period', None) != "" else None
     if period_end != None:
-        period_end = period_end[6:] + "-" + period_end[:2] + "-" + period_end[3:5]
+        if (period_start != None and period_end < period_start) or period_end > timezone.now().date():
+            period_end = timezone.now().date()
+        else:
+            period_end = period_end[6:] + "-" + period_end[:2] + "-" + period_end[3:5]
 
-    time_start = request.POST.get('start_time', None)
-    time_end = request.POST.get('end_time', None)
+    time_start = request.POST.get('start_time', None) if request.POST.get('start_time', None) != "" else None
+    time_end = request.POST.get('end_time', None) if request.POST.get('end_time', None) != "" else None
     rangeOfsearch = request.POST.get('domain', 0)
     date_time =  timezone.now()
     
     print(period_start)
+    print(period_end)
     print(rangeOfsearch)
     req = Request(keyword=keyword, period_start=period_start, period_end=period_end, time_start=time_start, time_end=time_end, rangeOfsearch=rangeOfsearch, date_time=date_time, includeAll=includeAll)
     req.save()

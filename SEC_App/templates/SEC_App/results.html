@@ -7,28 +7,118 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     {% load static %}
     <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}">
-    <script src="{% static 'SEC_App/search.js' %}" defer></script>
+    <!-- <script src="{% static 'SEC_App/reactions_chart.js' %}" defer></script> -->
 
-     <!-- Tajawal font -->
-     <link rel="preconnect" href="https://fonts.gstatic.com">
-     <link href="https://fonts.googleapis.com/css2?family=Tajawal&display=swap" rel="stylesheet">
+    <!-- Tajawal font -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal&display=swap" rel="stylesheet">
+
+    <!-- chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.2/chart.min.js" ></script>
+    
 
 </head>
 <body>  
   <h2>التغريدات</h2>
   <img src="{% static 'SEC_App/wordcloud.png' %}" alt="wordcloud" >
   
+  <canvas id="myChart" width="200" height="200"></canvas>
     <table>
-    
+      <ol>
     {% for tweet in tweets_list %}
-    <ol>
         <tr>
           <td><li></li></td>
           <td>{{ tweet }}</td>
         </tr>
-    </ol>
     {% endfor %}
+    </ol>
     </table>
 
 </body>
 </html>
+<script>
+  var reactions = JSON.parse("{{ reactions|escapejs }}");
+
+var likes = reactions['likes'];
+var replies = reactions['replies'];
+var retweets = reactions['retweets'];
+
+
+var ctx = document.getElementById("myChart");
+
+// setup
+const DATA_COUNT = 3;
+
+const labels = ['negative', 'neutral', 'positive'];
+const data = {
+  labels: labels,
+  datasets: [
+    {
+      label: 'likes',
+      data: likes,
+      backgroundColor: 'rgba(255, 206, 86, 0.2)', 
+      borderColor: 'rgba(255, 206, 86, 1)',
+      borderWidth: 1
+    },
+    {
+      label: 'retweets',
+      data: retweets,
+      backgroundColor: 'rgba(54, 162, 235, 0.2)',
+      borderColor: 'rgba(54, 162, 235, 1)',
+      borderWidth: 1
+    },
+    {
+      label: 'replies',
+      data: replies,
+      backgroundColor: 'rgba(255, 99, 132, 0.2)',
+      borderColor: 'rgba(255, 99, 132, 1)',
+      borderWidth: 1
+    },
+  ]
+};
+
+// config
+const config = {
+    type: 'bar',
+    data: data,
+    options: {
+      plugins: {
+        title: {
+          display: true,
+          text: 'Chart.js Bar Chart - Stacked'
+        },
+      },
+      responsive: true,
+      legend: {
+          labels: {
+            fontColor: 'rgb(240, 248, 255)'
+                }
+            },
+      scales: {
+        x: {
+          fontColor: 'rgb(240, 248, 255)',
+          stacked: true,
+        },
+        y: {
+          fontColor: 'rgb(240, 248, 255)',
+          stacked: true
+        }
+      }
+    }
+  };
+
+// action
+const actions = [
+    {
+      name: 'Randomize',
+      handler(chart) {
+        chart.data.datasets.forEach(dataset => {
+          dataset.data = Utils.numbers({count: chart.data.labels.length, min: 0});
+        });
+        chart.update();
+      }
+    },
+  ];
+
+var chart = new Chart(ctx, config, actions)
+</script>

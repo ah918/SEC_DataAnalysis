@@ -22,6 +22,7 @@ from sklearn.feature_extraction.text import CountVectorizer
     #For word cloud
 from ar_wordcloud import ArabicWordCloud
 
+
 '''___________________________________ STEP1: Data Gathring ____________________________________ '''
 
 def search(keywords , Since = None, Until = None ):
@@ -209,7 +210,7 @@ STEPS:
 
 if __name__ == "__main__":
     #Search for tweets
-    df = search("كهرباء")
+    df = search("@ALKAHRABA OR @AlkahrabaCare")
 
     #Clean dataframe 
     df = cleanDataframe(df)
@@ -223,3 +224,4 @@ if __name__ == "__main__":
     #(create+show,save:optional) arabic word cloud 
     word_cloud(dtm_df)
 
+    

@@ -4,7 +4,7 @@
 }
 
 body, html {
-    background-color: rgb(21, 21, 43);
+    background-color: #16162c;
     color: aliceblue;
     font-family: 'Tajawal', sans-serif;
 }
@@ -16,7 +16,7 @@ input, select, button {
 
 button {
     background-color:seagreen;
-    color: aliceblue;
+    color: rgb(240, 248, 255);
     padding-left: 8px;
     padding-right: 8px;
     padding-top: 2px;

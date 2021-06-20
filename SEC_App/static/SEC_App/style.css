@@ -35,10 +35,14 @@ label {
     visibility: visible;
 }
 
-table, th, td, ol, li {
+tr{
     border: 2px solid #f0f8ff;
     padding: 5px;
-  }
+    margin: 5px;
+}
+#table-tweets {
+    margin: 7px;
+}
 
 h2 {
     text-align: center;

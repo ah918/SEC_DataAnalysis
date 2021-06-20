@@ -14,15 +14,21 @@
      <link href="https://fonts.googleapis.com/css2?family=Tajawal&display=swap" rel="stylesheet">
 
 </head>
-<body>
-</div>  
+<body>  
   <h2>التغريدات</h2>
-  <ol>
+  <img src="{% static 'SEC_App/wordcloud.png' %}" alt="wordcloud" >
+  
     <table>
+    
     {% for tweet in tweets_list %}
-        <tr><li>{{ tweet }}</li></tr>
+    <ol>
+        <tr>
+          <td><li></li></td>
+          <td>{{ tweet }}</td>
+        </tr>
+    </ol>
     {% endfor %}
     </table>
-   </ol>
+
 </body>
 </html>

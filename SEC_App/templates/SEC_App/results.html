@@ -6,7 +6,7 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     {% load static %}
-    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}">
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=12">
     <!-- <script src="{% static 'SEC_App/reactions_chart.js' %}" defer></script> -->
 
     <!-- Tajawal font -->
@@ -19,23 +19,45 @@
 
 </head>
 <body>  
-  
-  <img src="{% static 'SEC_App/wordcloud.png' %}" alt="wordcloud" >
-  
-  <div id="myCahrt-container">
+  <h1>النتائج والتحليلات</h1>
+  <div id='search-details'>
+    <table>
+      <tr>
+        <th>كلمات البحث:</th>
+        <td>{{req.keyword}}</td>
+      </tr>
+    </table>
+    <table>
+      <tr>
+        <th>من:</th>
+        <td>{{req.period_start}}</td>
+        <th>إلى:</th>
+        <td>{{req.period_end}}</td>
+      </tr>
+    </table>
+  </div>
+  <br><br>
+  <div id="سحابة الكلمات" style='display: "inline-block"'>
+    <h2>سحابة الكلمات</h2>
+    <img src="{% static 'SEC_App/wordcloud.png' %}" alt="wordcloud" style='display: "inline-block"'>
+  </div>
+  <div id="myCahrt-container" style='display: "inline-block"'>
+    <h2>التفاعل مع التغريدات</h2>
     <canvas id="reactions-bar-chart" width="30%" height="30%" style='display: "inline-block" !important;'></canvas>
   </div>
+  <div id="week-days-container" style='display: "inline-block"'>
+    <canvas id="myChart2" width="500" height="500" style='display: "inline-block" !important;'></canvas>
+  </div>
+  <br><br><br>
   <div id='tweets-list'>
   <h2>التغريدات</h2>
     <table>
-      <ol>
     {% for tweet in tweets_list %}
         <tr>
-          <td><li></li></td>
+          <td class="counter">{{ forloop.counter }}</td>
           <td>{{ tweet }}</td>
         </tr>
     {% endfor %}
-    </ol>
     </table>
   </div>
 
@@ -90,7 +112,7 @@
         plugins: {
           title: {
             display: true,
-            text: 'التفاعل مع التغريدات',
+            text: '',
             fontColor: 'rgba(240, 248, 255, 1)',
           },
         },
@@ -126,4 +148,89 @@
     ];
 
   var chart = new Chart(ctx, config, actions)
+</script>
+
+<script>
+
+var postiveD = [37,58,50,68,27,10,5];
+var NegativeD = [56,34,80,98,120,33,77];
+var NatD = [92,120,90,130,30,40,70];
+//////////////////////
+
+var ctx2 = document.getElementById("myChart2");
+
+///////////////////////////////////////////////////////////////////
+// setup
+const DATA_COUNT = 7;
+const NUMBER_CFG = {count: DATA_COUNT, min: -100, max: 100};
+
+const labels = Utils.days({count: 7});
+const data = {
+  labels: labels,
+  datasets: [
+    {
+      label: 'Dataset 1',
+      data: Utils.numbers(NUMBER_CFG),
+      borderColor: Utils.CHART_COLORS.red,
+      backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5),
+      yAxisID: 'y',
+    },
+    {
+      label: 'Dataset 2',
+      data: Utils.numbers(NUMBER_CFG),
+      borderColor: Utils.CHART_COLORS.blue,
+      backgroundColor: Utils.transparentize(Utils.CHART_COLORS.blue, 0.5),
+      yAxisID: 'y1',
+    }
+  ]
+};
+
+// config
+const config = {
+  type: 'line',
+  data: data,
+  options: {
+    responsive: true,
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
+    stacked: false,
+    plugins: {
+      title: {
+        display: true,
+        text: 'Chart.js Line Chart - Multi Axis'
+      }
+    },
+    scales: {
+      y: {
+        type: 'linear',
+        display: true,
+        position: 'left',
+      },
+      y1: {
+        type: 'linear',
+        display: true,
+        position: 'right',
+
+        // grid line settings
+        grid: {
+          drawOnChartArea: false, // only want the grid lines for one axis to show up
+        },
+      },
+    }
+  },
+};
+const actions = [
+  {
+    name: 'Randomize',
+    handler(chart) {
+      chart.data.datasets.forEach(dataset => {
+        dataset.data = Utils.numbers({count: chart.data.labels.length, min: -100, max: 100});
+      });
+      chart.update();
+    }
+  },
+];
+var chart = new Chart(ctx2, config, actions)
 </script>

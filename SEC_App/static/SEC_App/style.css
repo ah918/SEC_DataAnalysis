@@ -7,6 +7,7 @@ body, html {
     background-color: #16162c;
     color: aliceblue;
     font-family: 'Tajawal', sans-serif;
+    margin: 10px;
 }
 
 input, select, button {
@@ -35,16 +36,26 @@ label {
     visibility: visible;
 }
 
-tr{
-    border: 2px solid #f0f8ff;
+td, th{
+    border-bottom: 2px solid #f0f8ff;
     padding: 5px;
-    margin: 5px;
 }
-#table-tweets {
-    margin: 7px;
+table {
+    border-top: 2px solid #f0f8ff;
+    border-left: 2px solid #f0f8ff;
+    border-right: 2px solid #f0f8ff;
 }
 
-h2 {
+#search-details table, th, td{
+    border: 0px; 
+}
+
+#search-details {
+    display: block;
+    border: 2px solid #f0f8ff;
+}
+
+h1 {
     text-align: center;
 }
 
@@ -70,3 +81,6 @@ h2 {
     position: relative;
 }
 
+#tweet-list {
+    text-align: right;
+}

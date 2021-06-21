@@ -146,5 +146,5 @@ def analysis(request):
     print(reactions_dic)
     reactions = dumps(reactions_dic)
 
-    return render(request, 'SEC_App/results.html',{'tweets_list': tweet_list, 'reactions': reactions})
+    return render(request, 'SEC_App/results.html',{'tweets_list': tweet_list, 'reactions': reactions, 'req': req})
 

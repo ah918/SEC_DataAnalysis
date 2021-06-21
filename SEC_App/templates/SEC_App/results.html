@@ -22,7 +22,9 @@
   <h2>التغريدات</h2>
   <img src="{% static 'SEC_App/wordcloud.png' %}" alt="wordcloud" >
   
-  <canvas id="myChart" width="200" height="200"></canvas>
+  <div id="myCahrt-container">
+    <canvas id="reactions-bar-chart" width="30%" height="30%" style='display: "inline-block" !important;'></canvas>
+  </div>
     <table>
       <ol>
     {% for tweet in tweets_list %}
@@ -39,86 +41,87 @@
 <script>
   var reactions = JSON.parse("{{ reactions|escapejs }}");
 
-var likes = reactions['likes'];
-var replies = reactions['replies'];
-var retweets = reactions['retweets'];
+  var likes = reactions['likes'];
+  var replies = reactions['replies'];
+  var retweets = reactions['retweets'];
 
 
-var ctx = document.getElementById("myChart");
+  var ctx = document.getElementById("reactions-bar-chart");
 
-// setup
-const DATA_COUNT = 3;
+  // setup
+  const DATA_COUNT = 3;
 
-const labels = ['negative', 'neutral', 'positive'];
-const data = {
-  labels: labels,
-  datasets: [
-    {
-      label: 'likes',
-      data: likes,
-      backgroundColor: 'rgba(255, 206, 86, 0.2)', 
-      borderColor: 'rgba(255, 206, 86, 1)',
-      borderWidth: 1
-    },
-    {
-      label: 'retweets',
-      data: retweets,
-      backgroundColor: 'rgba(54, 162, 235, 0.2)',
-      borderColor: 'rgba(54, 162, 235, 1)',
-      borderWidth: 1
-    },
-    {
-      label: 'replies',
-      data: replies,
-      backgroundColor: 'rgba(255, 99, 132, 0.2)',
-      borderColor: 'rgba(255, 99, 132, 1)',
-      borderWidth: 1
-    },
-  ]
-};
-
-// config
-const config = {
-    type: 'bar',
-    data: data,
-    options: {
-      plugins: {
-        title: {
-          display: true,
-          text: 'Chart.js Bar Chart - Stacked'
-        },
+  const labels = ['negative', 'neutral', 'positive'];
+  const data = {
+    labels: labels,
+    datasets: [
+      {
+        label: 'likes',
+        data: likes,
+        backgroundColor: 'rgba(255, 206, 86, 0.2)', 
+        borderColor: 'rgba(255, 206, 86, 1)',
+        borderWidth: 1
       },
-      responsive: true,
-      legend: {
-          labels: {
-            fontColor: 'rgb(240, 248, 255)'
-                }
-            },
-      scales: {
-        x: {
-          fontColor: 'rgb(240, 248, 255)',
-          stacked: true,
-        },
-        y: {
-          fontColor: 'rgb(240, 248, 255)',
-          stacked: true
-        }
-      }
-    }
+      {
+        label: 'retweets',
+        data: retweets,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      },
+      {
+        label: 'replies',
+        data: replies,
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1
+      },
+    ]
   };
 
-// action
-const actions = [
-    {
-      name: 'Randomize',
-      handler(chart) {
-        chart.data.datasets.forEach(dataset => {
-          dataset.data = Utils.numbers({count: chart.data.labels.length, min: 0});
-        });
-        chart.update();
+  // config
+  const config = {
+      type: 'bar',
+      data: data,
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: 'Reactions Bar Chart',
+            fontColor: 'rgba(240, 248, 255, 1)',
+          },
+        },
+        responsive: true,
+        
+        scales: {
+          x: {
+            stacked: true,
+            ticks: {
+              fontColor: 'rgba(240, 248, 255, 1)',
+            },
+          },
+          y: {
+            stacked: true,
+            ticks: {
+              fontColor: 'rgba(240, 248, 255, 1)',
+            },
+          }
+        }
       }
-    },
-  ];
+    };
+  // 'rgba(240, 248, 255, 1)'
+  // action
+  const actions = [
+      {
+        name: 'Randomize',
+        handler(chart) {
+          chart.data.datasets.forEach(dataset => {
+            dataset.data = Utils.numbers({count: chart.data.labels.length, min: 0});
+          });
+          chart.update();
+        }
+      },
+    ];
 
-var chart = new Chart(ctx, config, actions)
+  var chart = new Chart(ctx, config, actions)
 </script>

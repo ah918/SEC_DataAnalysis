@@ -64,8 +64,9 @@ h2 {
     margin-top: 5%;
 } 
 
-/* #loading-wrapper-dots {
-    right: 50%;
-    transform: translateX(-50%);
+#myCahrt-container {
+    width:1000px !important;
+    height:1000px !important;
+    position: relative;
 }
-*/
+

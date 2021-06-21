@@ -98,6 +98,8 @@ def analysis(request):
     # #(create+show,save:optional) arabic word cloud 
     # word_cloud(dtm, path='SEC_App/static/SEC_App/wordcloud.png')
 
+    tweets_df.to_csv('period_tweets.csv')
+
     print(tweets_df.shape[0])
     for i, tweet in enumerate(tweets_df):
         req.tweet_set.create(tweet_id=tweets_df.iloc[i].tweet_id, date=tweets_df.iloc[i].date, place=tweets_df.iloc[i].place, tweet_text=tweets_df.iloc[i].tweet_text, hashtags=tweets_df.iloc[i].hashtags, urls=tweets_df.iloc[i].urls, nlike=tweets_df.iloc[i].nlikes, nretweet=tweets_df.iloc[i].nretweets, nreply=tweets_df.iloc[i].nreplies, username=tweets_df.iloc[i].username, name=tweets_df.iloc[i].name)
@@ -105,7 +107,13 @@ def analysis(request):
 
     tweet_list = tweets_df.head(50)['tweet_text'].to_list()
     tweets_list = '\n'.join(tweet_list)
-    
+
+    reactions = get_reactions_dic(tweets_df)
+    period_data = get_period_dic(tweets_df)
+
+    return render(request, 'SEC_App/results.html',{'tweets_list': tweet_list, 'reactions': reactions, 'req': req, 'period_data':period_data})
+
+def get_reactions_dic(tweets_df):
     # raection bar chart data set
     tweets_df_reactions = pd.DataFrame()
     tweets_df_reactions['nlikes']= tweets_df['nlikes']
@@ -128,5 +136,10 @@ def analysis(request):
 
     reactions = dumps(reactions_dic)
 
-    return render(request, 'SEC_App/results.html',{'tweets_list': tweet_list, 'reactions': reactions, 'req': req})
+    return reactions
 
+def get_period_dic():
+    #read tweets_df
+    tweets_df = []
+    periods_df = pd.DataFrame()
+    periods_df['sentiment'] = [random.randint(-1, 1) for i in range(tweets_df.shape[0])]

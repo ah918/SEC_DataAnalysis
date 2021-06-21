@@ -16,23 +16,6 @@ nest_asyncio.apply()
 from .wordCloud import *
 
 # Create your views here.
-def twitter_search(keywords , Since = None, Until = None ):
-    c = twint.Config()
-    c.Hide_output = True
-    c.Limit = 10_000 #if not (Since or Until) else None
-    #PANDAS
-    c.Pandas = True
-    c.Pandas_au = True
-    c.Pandas_clean = True
-    #SEARCH
-    c.Search = keywords
-    c.Since = Since
-    c.Until = Until
-    twint.run.Search(c)
-    Tweets_df = twint.storage.panda.Tweets_df[['id','date','place','tweet','hashtags','urls',
-                                            'nlikes','nretweets','nreplies','username','name','language']]
-    Tweets_df.rename({'id': 'tweet_id', 'tweet': 'tweet_text'}, axis=1, inplace=True)
-    return Tweets_df
 
 def searchView(request):
     # if request.method == 'POST':
@@ -143,7 +126,6 @@ def analysis(request):
         'retweets': retweets_list
     }
 
-    print(reactions_dic)
     reactions = dumps(reactions_dic)
 
     return render(request, 'SEC_App/results.html',{'tweets_list': tweet_list, 'reactions': reactions, 'req': req})

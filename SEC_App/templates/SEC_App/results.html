@@ -19,12 +19,14 @@
 
 </head>
 <body>  
-  <h2>التغريدات</h2>
+  
   <img src="{% static 'SEC_App/wordcloud.png' %}" alt="wordcloud" >
   
   <div id="myCahrt-container">
     <canvas id="reactions-bar-chart" width="30%" height="30%" style='display: "inline-block" !important;'></canvas>
   </div>
+  <div id='tweets-list'>
+  <h2>التغريدات</h2>
     <table>
       <ol>
     {% for tweet in tweets_list %}
@@ -35,6 +37,7 @@
     {% endfor %}
     </ol>
     </table>
+  </div>
 
 </body>
 </html>
@@ -51,26 +54,26 @@
   // setup
   const DATA_COUNT = 3;
 
-  const labels = ['negative', 'neutral', 'positive'];
+  const labels = ['سلبي', 'طبيعي', 'إيجابي'];
   const data = {
     labels: labels,
     datasets: [
       {
-        label: 'likes',
+        label: 'إعجابات',
         data: likes,
         backgroundColor: 'rgba(255, 206, 86, 0.2)', 
         borderColor: 'rgba(255, 206, 86, 1)',
         borderWidth: 1
       },
       {
-        label: 'retweets',
+        label: 'إعادات التغريد',
         data: retweets,
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1
       },
       {
-        label: 'replies',
+        label: 'الردود',
         data: replies,
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
         borderColor: 'rgba(255, 99, 132, 1)',
@@ -87,12 +90,11 @@
         plugins: {
           title: {
             display: true,
-            text: 'Reactions Bar Chart',
+            text: 'التفاعل مع التغريدات',
             fontColor: 'rgba(240, 248, 255, 1)',
           },
         },
         responsive: true,
-        
         scales: {
           x: {
             stacked: true,

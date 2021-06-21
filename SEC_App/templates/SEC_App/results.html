@@ -37,11 +37,18 @@
     </table>
   </div>
   <br><br>
-  <div id="myCahrt-container" style='display: "inline-block"'>
+  <div class="center-wrapper">
+  <div id="myCahrt-container">
     <span>التفاعل مع التغريدات</span>
     <canvas id="reactions-bar-chart" width="30%" height="30%" style='display: "inline-block" !important;'></canvas>
   </div>
-  <div id="wordcloud-container" style='display: "inline-block"'>
+  <div id="pie-chart-container">
+    <span>تحليل المشاعر</span>
+    <canvas id="sentiment-pie-chart" style='display: "inline-block" !important;'></canvas>
+  </div>
+ </div>
+  <br><br><br>
+  <div id="wordcloud-container">
     <span>سحابة الكلمات</span>
     <br><br>
     <img src="{% static 'SEC_App/wordcloud.png' %}" alt="wordcloud" style='display: "inline-block"'>
@@ -84,23 +91,26 @@
       {
         label: 'إعجابات',
         data: likes,
-        backgroundColor: 'rgba(255, 206, 86, 0.2)', 
-        borderColor: 'rgba(255, 206, 86, 1)',
-        borderWidth: 1
+        backgroundColor: 'rgba(255, 99, 132, 1)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1,
+        hoverOffset: 4
       },
       {
         label: 'إعادات التغريد',
         data: retweets,
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        backgroundColor: 'rgba(54, 162, 235, 1)',
         borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1
+        borderWidth: 1,
+        hoverOffset: 4
       },
       {
         label: 'الردود',
         data: replies,
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-        borderColor: 'rgba(255, 99, 132, 1)',
-        borderWidth: 1
+        backgroundColor: 'rgba(255, 206, 86, 1)', 
+        borderColor: 'rgba(255, 206, 86, 1)',
+        borderWidth: 1,
+        hoverOffset: 4
       },
     ]
   };
@@ -165,7 +175,6 @@
 
   var chart = new Chart(ctx, config, actions)
 </script>
-
 <script>
 
 var postiveD = [37,58,50,68,27,10,5];
@@ -249,4 +258,119 @@ const actions = [
   },
 ];
 var chart = new Chart(ctx2, config, actions)
+</script>
+<script>
+  var reactions = JSON.parse("{{ setiment_data|escapejs }}");
+
+  var pie_ctx = document.getElementById("sentiment-pie-chart");
+  //setup
+  const data_pie = {
+    labels: ['إيجابي', 'سلبي', 'طبيعي'],
+    datasets: [
+      {
+        label: 'Sentiment',
+        data: reactions['sentiment'],
+        backgroundColor: [
+        'rgb(255, 99, 132)',
+        'rgb(54, 162, 235)',
+        'rgb(255, 205, 86)'
+        ],
+        hoverOffset: 4
+      }
+    ]
+  };
+
+  //config
+  const config_pie = {
+  type: 'pie',
+  data: data_pie,
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: {
+          color: 'rgba(240, 248, 255, 1)',  // not 'fontColor:' anymore
+          // fontSize: 18  // not 'fontSize:' anymore
+          font: {
+            size: 18 // 'size' now within object 'font {}'
+          }
+        }
+      },
+      title: {
+        display: true,
+        text: ''
+      }
+    }
+  },
+  };
+
+  //actions
+  const actions_pie = [
+  {
+    name: 'Randomize',
+    handler(chart) {
+      chart.data.datasets.forEach(dataset => {
+        dataset.data = Utils.numbers({count: chart.data.labels.length, min: 0, max: 100});
+      });
+      chart.update();
+    }
+  },
+  {
+    name: 'Add Dataset',
+    handler(chart) {
+      const data = chart.data;
+      const newDataset = {
+        label: 'Dataset ' + (data.datasets.length + 1),
+        backgroundColor: [],
+        data: [],
+      };
+
+      for (let i = 0; i < data.labels.length; i++) {
+        newDataset.data.push(Utils.numbers({count: 1, min: 0, max: 100}));
+
+        const colorIndex = i % Object.keys(Utils.CHART_COLORS).length;
+        newDataset.backgroundColor.push(Object.values(Utils.CHART_COLORS)[colorIndex]);
+      }
+
+      chart.data.datasets.push(newDataset);
+      chart.update();
+    }
+  },
+  {
+    name: 'Add Data',
+    handler(chart) {
+      const data = chart.data;
+      if (data.datasets.length > 0) {
+        data.labels.push('data #' + (data.labels.length + 1));
+
+        for (var index = 0; index < data.datasets.length; ++index) {
+          data.datasets[index].data.push(Utils.rand(0, 100));
+        }
+
+        chart.update();
+      }
+    }
+  },
+  {
+    name: 'Remove Dataset',
+    handler(chart) {
+      chart.data.datasets.pop();
+      chart.update();
+    }
+  },
+  {
+    name: 'Remove Data',
+    handler(chart) {
+      chart.data.labels.splice(-1, 1); // remove the label first
+
+      chart.data.datasets.forEach(dataset => {
+        dataset.data.pop();
+      });
+
+      chart.update();
+    }
+  }
+];
+var chart = new Chart(pie_ctx, config_pie, actions_pie)
 </script>

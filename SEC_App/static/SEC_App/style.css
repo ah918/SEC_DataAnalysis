@@ -76,7 +76,7 @@ h1 {
     margin-top: 5%;
 } 
 
-#myCahrt-container, #wordcloud-container {
+#myCahrt-container, #wordcloud-container, #pie-chart-container {
     width:500px !important;
     height:500px !important;
     position: relative;
@@ -85,7 +85,10 @@ h1 {
     font-size: x-large;
     font-weight: 600;
     margin: 20px;
+    text-align: center;
+    margin: 70px;
 }
+
 
 #tweet-list {
     text-align: right;

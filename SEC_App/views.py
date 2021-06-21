@@ -108,8 +108,9 @@ def analysis(request):
 
     reactions = get_reactions_dic(tweets_df)
     period_data = get_period_dic(tweets_df)
+    setiment_data = get_sentiment_dic(tweets_df)
 
-    return render(request, 'SEC_App/results.html',{'tweets_list': tweet_list, 'reactions': reactions, 'req': req, 'period_data':period_data})
+    return render(request, 'SEC_App/results.html',{'tweets_list': tweet_list, 'reactions': reactions, 'req': req, 'period_data':period_data, 'setiment_data':setiment_data})
 
 def get_reactions_dic(tweets_df):
     # raection bar chart data set
@@ -140,3 +141,13 @@ def get_period_dic(tweets_df):
     #read tweets_df
     periods_df = pd.DataFrame()
     periods_df['sentiment'] = [random.randint(-1, 1) for i in range(tweets_df.shape[0])]
+
+def get_sentiment_dic(tweets_df):
+    sentiment_df = pd.DataFrame()
+    sentiment_df['sentiment'] = [random.randint(-1, 1) for i in range(tweets_df.shape[0])]
+    sentiment_count = sentiment_df['sentiment'].value_counts()
+    sentiment_dic = {
+        'sentiment': [int(sentiment_count[1]), int(sentiment_count[-1]), int(sentiment_count[0])]
+    }
+    print(sentiment_count)
+    return dumps(sentiment_dic)

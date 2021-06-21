@@ -6,7 +6,7 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     {% load static %}
-    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=13">
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=16">
     <!-- <script src="{% static 'SEC_App/reactions_chart.js' %}" defer></script> -->
 
     <!-- Tajawal font -->
@@ -37,13 +37,14 @@
     </table>
   </div>
   <br><br>
-  <div id="سحابة الكلمات" style='display: "inline-block"'>
-    <h2>سحابة الكلمات</h2>
-    <img src="{% static 'SEC_App/wordcloud.png' %}" alt="wordcloud" style='display: "inline-block"'>
-  </div>
   <div id="myCahrt-container" style='display: "inline-block"'>
-    <h2>التفاعل مع التغريدات</h2>
+    <span>التفاعل مع التغريدات</span>
     <canvas id="reactions-bar-chart" width="30%" height="30%" style='display: "inline-block" !important;'></canvas>
+  </div>
+  <div id="wordcloud-container" style='display: "inline-block"'>
+    <span>سحابة الكلمات</span>
+    <br><br>
+    <img src="{% static 'SEC_App/wordcloud.png' %}" alt="wordcloud" style='display: "inline-block"'>
   </div>
   <div id="week-days-container" style='display: "inline-block"'>
     <canvas id="myChart2" width="500" height="500" style='display: "inline-block" !important;'></canvas>
@@ -110,6 +111,15 @@
       data: data,
       options: {
         plugins: {
+          legend: {
+        labels: {
+          color: 'rgba(240, 248, 255, 1)',  // not 'fontColor:' anymore
+          // fontSize: 18  // not 'fontSize:' anymore
+          font: {
+            size: 18 // 'size' now within object 'font {}'
+          }
+        }
+      },
           title: {
             display: true,
             text: '',
@@ -121,13 +131,19 @@
           x: {
             stacked: true,
             ticks: {
-              fontColor: 'rgba(240, 248, 255, 1)',
+              color: 'rgba(240, 248, 255, 1)', 
+              font: {
+              size: 18, // 'size' now within object 'font {}'
+              },
             },
           },
           y: {
             stacked: true,
             ticks: {
-              fontColor: 'rgba(240, 248, 255, 1)',
+              color: 'rgba(240, 248, 255, 1)', 
+              font: {
+              size: 18, // 'size' now within object 'font {}'
+              },
             },
           }
         }

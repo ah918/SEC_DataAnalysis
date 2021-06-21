@@ -98,8 +98,6 @@ def analysis(request):
     # #(create+show,save:optional) arabic word cloud 
     # word_cloud(dtm, path='SEC_App/static/SEC_App/wordcloud.png')
 
-    tweets_df.to_csv('period_tweets.csv')
-
     print(tweets_df.shape[0])
     for i, tweet in enumerate(tweets_df):
         req.tweet_set.create(tweet_id=tweets_df.iloc[i].tweet_id, date=tweets_df.iloc[i].date, place=tweets_df.iloc[i].place, tweet_text=tweets_df.iloc[i].tweet_text, hashtags=tweets_df.iloc[i].hashtags, urls=tweets_df.iloc[i].urls, nlike=tweets_df.iloc[i].nlikes, nretweet=tweets_df.iloc[i].nretweets, nreply=tweets_df.iloc[i].nreplies, username=tweets_df.iloc[i].username, name=tweets_df.iloc[i].name)
@@ -138,8 +136,7 @@ def get_reactions_dic(tweets_df):
 
     return reactions
 
-def get_period_dic():
+def get_period_dic(tweets_df):
     #read tweets_df
-    tweets_df = []
     periods_df = pd.DataFrame()
     periods_df['sentiment'] = [random.randint(-1, 1) for i in range(tweets_df.shape[0])]

@@ -46,13 +46,14 @@ table {
     border-right: 2px solid #f0f8ff;
 }
 
-#search-details table, th, td{
+#search-details table, #search-details th,  #search-details td{
     border: 0px; 
 }
 
 #search-details {
     display: block;
-    border: 2px solid #f0f8ff;
+    border-top: 2px solid #f0f8ff;
+    border-bottom: 2px solid #f0f8ff;
 }
 
 h1 {
@@ -75,10 +76,15 @@ h1 {
     margin-top: 5%;
 } 
 
-#myCahrt-container {
+#myCahrt-container, #wordcloud-container {
     width:500px !important;
     height:500px !important;
     position: relative;
+    vertical-align: top;
+    display: inline-block;
+    font-size: x-large;
+    font-weight: 600;
+    margin: 20px;
 }
 
 #tweet-list {

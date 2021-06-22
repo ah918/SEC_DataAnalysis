@@ -30,33 +30,34 @@ def searchView(request):
 
 def analysis(request):
 
+    #create request model opject
     req = create_request(request)
     
     #Search for tweets
     tweets_df = search(req.keyword, Since = req.period_start, Until = req.period_end)
-    # #Clean dataframe
-    # tweets_df_cleaned = cleanDataframe(tweets_df)
-    # #Clean text
-    # tweets_df_cleaned['tweet_text'] =  tweets_df_cleaned['tweet_text'].apply(lambda text : cleanTxt(text,Emoji_Dict(),stopwords_set()))
-    # #Preprocessing text: create document term matrix 
-    # dtm = dtm_df(tweets_df_cleaned['tweet_text'])
-    # #(create+show,save:optional) arabic word cloud 
-    # word_cloud(dtm, path='SEC_App/static/SEC_App/wordcloud.png')
-
-    # save tweets
+    
+    # create and save tweets model objects
     print(tweets_df.shape[0])
     for i, tweet in enumerate(tweets_df):
         req.tweet_set.create(tweet_id=tweets_df.iloc[i].tweet_id, date=tweets_df.iloc[i].date, place=tweets_df.iloc[i].place, tweet_text=tweets_df.iloc[i].tweet_text, hashtags=tweets_df.iloc[i].hashtags, urls=tweets_df.iloc[i].urls, nlike=tweets_df.iloc[i].nlikes, nretweet=tweets_df.iloc[i].nretweets, nreply=tweets_df.iloc[i].nreplies, username=tweets_df.iloc[i].username, name=tweets_df.iloc[i].name)
     req.save()
 
+    # prepare tweet list to appear in result.html
     tweet_list = tweets_df.head(50)['tweet_text'].to_list()
-    tweets_list = '\n'.join(tweet_list)
+
+    # actual from and to dates
+    from_date = tweets_df.iloc[tweets_df.shape[0]-1].date[:10]
+    to_date = tweets_df.iloc[0].date[:10]
 
     reactions = get_reactions_dic(tweets_df)
     period_data = get_period_dic(tweets_df)
-    setiment_data = get_sentiment_dic(tweets_df)
+    sentiment_data = get_sentiment_dic(tweets_df)
 
-    return render(request, 'SEC_App/results.html',{'tweets_list': tweet_list, 'reactions': reactions, 'req': req, 'period_data':period_data, 'setiment_data':setiment_data, 'num_tweets':tweets_df.shape[0]})
+    #create word cloud
+    #create_word_cloud(tweets_df)
+    
+
+    return render(request, 'SEC_App/results.html',{'tweets_list': tweet_list, 'reactions': reactions, 'req': req, 'from_date':from_date, 'to_date':to_date, 'period_data':period_data, 'sentiment_data':sentiment_data, 'num_tweets':tweets_df.shape[0]})
 
 def get_reactions_dic(tweets_df):
     # raection bar chart data set
@@ -160,3 +161,13 @@ def create_request(request):
     req.save()
 
     return req
+
+def create_word_cloud(tweets_df):
+    #Clean dataframe
+    tweets_df_cleaned = cleanDataframe(tweets_df)
+    #Clean text
+    tweets_df_cleaned['tweet_text'] =  tweets_df_cleaned['tweet_text'].apply(lambda text : cleanTxt(text,Emoji_Dict(),stopwords_set()))
+    #Preprocessing text: create document term matrix 
+    dtm = dtm_df(tweets_df_cleaned['tweet_text'])
+    #(create+show,save:optional) arabic word cloud 
+    word_cloud(dtm, path='SEC_App/static/SEC_App/wordcloud.png')

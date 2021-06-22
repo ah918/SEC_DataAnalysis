@@ -110,7 +110,7 @@ def analysis(request):
     period_data = get_period_dic(tweets_df)
     setiment_data = get_sentiment_dic(tweets_df)
 
-    return render(request, 'SEC_App/results.html',{'tweets_list': tweet_list, 'reactions': reactions, 'req': req, 'period_data':period_data, 'setiment_data':setiment_data})
+    return render(request, 'SEC_App/results.html',{'tweets_list': tweet_list, 'reactions': reactions, 'req': req, 'period_data':period_data, 'setiment_data':setiment_data, 'num_tweets':tweets_df.shape[0]})
 
 def get_reactions_dic(tweets_df):
     # raection bar chart data set

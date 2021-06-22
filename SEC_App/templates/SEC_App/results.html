@@ -30,9 +30,9 @@
     <table>
       <tr>
         <th>من:</th>
-        <td>{{req.period_start}}</td>
+        <td>{{from_date}}</td>
         <th>إلى:</th>
-        <td>{{req.period_end}}</td>
+        <td>{{to_date}}</td>
       </tr>
     </table>
   </div>
@@ -266,7 +266,7 @@ const actions = [
 var chart = new Chart(ctx2, config, actions)
 </script>
 <script>
-  var reactions = JSON.parse("{{ setiment_data|escapejs }}");
+  var reactions = JSON.parse("{{ sentiment_data|escapejs }}");
 
   var pie_ctx = document.getElementById("sentiment-pie-chart");
   //setup

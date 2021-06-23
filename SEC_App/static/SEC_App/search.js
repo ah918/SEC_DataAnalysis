@@ -31,3 +31,7 @@ function loadingPage(){
 
     return true;
 }
+
+function windowPrint(){
+    document.querySelector("#results-page").contentWindow.print()
+}

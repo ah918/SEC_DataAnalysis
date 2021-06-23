@@ -29,12 +29,12 @@ def searchView(request):
     return render(request,'SEC_App/search.html')
 
 def analysis(request):
-
+    print('limit:', request.POST.get('limit',''))
     #create request model opject
     req = create_request(request)
     
     #Search for tweets
-    tweets_df = search(req.keyword, Since = req.period_start, Until = req.period_end)
+    tweets_df = search(req.keyword, limit=request.POST.get('limit',''), Since = req.period_start, Until = req.period_end)
     
     # create and save tweets model objects
     print(tweets_df.shape[0])
@@ -49,13 +49,24 @@ def analysis(request):
     from_date = tweets_df.iloc[tweets_df.shape[0]-1].date[:10]
     to_date = tweets_df.iloc[0].date[:10]
 
+    #create word cloud
+    #Clean dataframe
+    # tweets_df_cleaned = cleanDataframe(tweets_df)
+    # #Clean text
+    # tweets_df_cleaned['tweet_text'] =  tweets_df_cleaned['tweet_text'].apply(lambda text : cleanTxt(text,Emoji_Dict(),stopwords_set()))
+    # #Preprocessing text: create document term matrix 
+    # dtm = dtm_df(tweets_df_cleaned['tweet_text'])
+    #(create+show,save:optional) arabic word cloud 
+    #word_cloud(dtm, path='SEC_App/static/SEC_App/wordcloud.png')
+
+    #tweets_df = predict_sentiments(tweets_df, dtm)
+
     reactions = get_reactions_dic(tweets_df)
     period_data = get_period_dic(tweets_df)
     sentiment_data = get_sentiment_dic(tweets_df)
 
-    #create word cloud
-    #create_word_cloud(tweets_df)
     
+    print('limit:', request.POST.get('limit',''))
 
     return render(request, 'SEC_App/results.html',{'tweets_list': tweet_list, 'reactions': reactions, 'req': req, 'from_date':from_date, 'to_date':to_date, 'period_data':period_data, 'sentiment_data':sentiment_data, 'num_tweets':tweets_df.shape[0]})
 
@@ -86,8 +97,68 @@ def get_reactions_dic(tweets_df):
 
 def get_period_dic(tweets_df):
     #read tweets_df
-    periods_df = pd.DataFrame()
-    periods_df['sentiment'] = [random.randint(-1, 1) for i in range(tweets_df.shape[0])]
+    
+    periods_df = tweets_df
+    periods_df['sentiment'] = [random.randint(-1, 1) for i in range(periods_df.shape[0])]
+    tweets_df_negative = pd.DataFrame(periods_df[periods_df['sentiment']==-1])
+    tweets_df_neutral = pd.DataFrame(periods_df[periods_df['sentiment']==0])
+    tweets_df_positive = pd.DataFrame(periods_df[periods_df['sentiment']==1])
+    ########
+    tweets_df_negative_Day_List = getListDays(tweets_df_negative)
+    tweets_df_neutral_Day_List = getListDays(tweets_df_neutral)
+    tweets_df_positive_Day_List = getListDays(tweets_df_positive)
+    tweets_df_negative_Months_List = getListMonths(tweets_df_negative)
+    tweets_df_neutral_Months_List = getListMonths(tweets_df_neutral)
+    tweets_df_positive_Months_List = getListMonths(tweets_df_positive)
+    #######
+    print(tweets_df_negative_Day_List)
+    print(tweets_df_neutral_Day_List)
+    print(tweets_df_positive_Day_List)
+    print("-------------------------------")
+    print(tweets_df_negative_Months_List)
+    print(tweets_df_neutral_Months_List)
+    print(tweets_df_positive_Months_List)
+    ######
+    periods_dic = {
+        'negativeDays': tweets_df_negative_Day_List,
+        'neutralDays': tweets_df_neutral_Day_List,
+        'positiveDays': tweets_df_positive_Day_List,
+        'negativeMonths': tweets_df_negative_Months_List,
+        'neutralMonths': tweets_df_neutral_Months_List,
+        'positiveMonths': tweets_df_positive_Months_List
+    }
+
+    periods = dumps(periods_dic)
+
+    return periods
+
+def getListDays(tweets_df_sen):
+    Full_Date = tweets_df_sen['date'].values.tolist()
+    z=0
+    newDay = []
+    for i in Full_Date:
+          e = Full_Date[z]
+          date= e[0:10]
+          day_name= ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+          day = datetime.datetime.strptime(date,'%Y-%m-%d').weekday()
+          newDay.append(day_name[day])
+          z=z+1
+   
+    days = [newDay.count("Saturday"),newDay.count("Friday"),newDay.count("Thursday"),newDay.count("Wednesday"),newDay.count("Tuesday"),newDay.count("Monday"),newDay.count("Sunday")]
+    return days
+    
+def getListMonths(tweets_df_sen):
+    Full_Date = tweets_df_sen['date'].values.tolist()
+    z=0
+    newMon = []
+    for i in Full_Date:
+          e = Full_Date[z]
+          mon= e[5:7]
+          newMon.append(mon)
+          z=z+1
+    print('month', mon)
+    months= [newMon.count("12"),newMon.count("11"),newMon.count("10"),newMon.count("09"),newMon.count("08"),newMon.count("07"),newMon.count("06"),newMon.count("05"),newMon.count("04"),newMon.count("03"),newMon.count("02"),newMon.count("01")]      
+    return months
 
 def get_sentiment_dic(tweets_df):
     sentiment_df = pd.DataFrame()
@@ -161,13 +232,3 @@ def create_request(request):
     req.save()
 
     return req
-
-def create_word_cloud(tweets_df):
-    #Clean dataframe
-    tweets_df_cleaned = cleanDataframe(tweets_df)
-    #Clean text
-    tweets_df_cleaned['tweet_text'] =  tweets_df_cleaned['tweet_text'].apply(lambda text : cleanTxt(text,Emoji_Dict(),stopwords_set()))
-    #Preprocessing text: create document term matrix 
-    dtm = dtm_df(tweets_df_cleaned['tweet_text'])
-    #(create+show,save:optional) arabic word cloud 
-    word_cloud(dtm, path='SEC_App/static/SEC_App/wordcloud.png')

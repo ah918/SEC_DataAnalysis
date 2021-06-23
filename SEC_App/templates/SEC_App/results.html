@@ -6,8 +6,8 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     {% load static %}
-    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=17">
-    <!-- <script src="{% static 'SEC_App/reactions_chart.js' %}" defer></script> -->
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=18">
+    <script src="{% static 'SEC_App/search.js' %}" defer></script>
 
     <!-- Tajawal font -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -15,10 +15,26 @@
 
     <!-- chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.2/chart.min.js" ></script>
+
+    <!-- print pdf -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript">
+        $("#btnPrint").live("click", function () {
+            var divContents = $("#dvContainer").html();
+            var printWindow = window.open('', '', 'height=400,width=800');
+            printWindow.document.write('<html><head><title>DIV Contents</title>');
+            printWindow.document.write('</head><body >');
+            printWindow.document.write(divContents);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        });
+    </script>
     
 
 </head>
 <body>  
+  <div id='dvContainer'>
   <h1>النتائج والتحليلات</h1>
   <div id='search-details'>
     <table>
@@ -52,15 +68,16 @@
   </div>
  </div>
   <br><br><br>
+  <div id="week-days-container" style='display: "inline-block"'>
+    <canvas id="myChart2" width="500" height="500" style='display: "inline-block" !important;'></canvas>
+    <button id="0" type="button" >أيام</button>
+    <button id="1" type="button" >أشهر</button>
+  </div>
   <div id="wordcloud-container">
     <span>سحابة الكلمات</span>
     <br><br>
     <img src="{% static 'SEC_App/wordcloud.png' %}" alt="wordcloud" style='display: "inline-block"'>
   </div>
-  <div id="week-days-container" style='display: "inline-block"'>
-    <canvas id="myChart2" width="500" height="500" style='display: "inline-block" !important;'></canvas>
-  </div>
-  <br><br><br>
   <div id='tweets-list'>
   <h2>من التغريدات</h2>
     <table>
@@ -73,8 +90,7 @@
     </table>
   </div>
 
-</body>
-</html>
+
 <script>
   var reactions = JSON.parse("{{ reactions|escapejs }}");
 
@@ -182,88 +198,253 @@
   var chart = new Chart(ctx, config, actions)
 </script>
 <script>
+  var period_data = JSON.parse("{{ period_data|escapejs }}");
 
-var postiveD = [37,58,50,68,27,10,5];
-var NegativeD = [56,34,80,98,120,33,77];
-var NatD = [92,120,90,130,30,40,70];
-//////////////////////
+  var negativeData = period_data['negativeDays'];
+  var neutralData = period_data['neutralDays'];
+  var positiveData = period_data['positiveDays'];
 
-var ctx2 = document.getElementById("myChart2");
+  var postiveD = period_data['negativeMonths'];
+  var NegativeD = period_data['neutralMonths'];
+  var NatD = period_data['positiveMonths'];
 
-///////////////////////////////////////////////////////////////////
-// setup
-const DATA_COUNT = 7;
-const NUMBER_CFG = {count: DATA_COUNT, min: -100, max: 100};
+  var ctx2 = document.getElementById("myChart2");
 
-const labels = Utils.days({count: 7});
-const data = {
-  labels: labels,
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: Utils.numbers(NUMBER_CFG),
-      borderColor: Utils.CHART_COLORS.red,
-      backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5),
-      yAxisID: 'y',
-    },
-    {
-      label: 'Dataset 2',
-      data: Utils.numbers(NUMBER_CFG),
-      borderColor: Utils.CHART_COLORS.blue,
-      backgroundColor: Utils.transparentize(Utils.CHART_COLORS.blue, 0.5),
-      yAxisID: 'y1',
-    }
-  ]
-};
+  var chart3 , chart2;
+  function Days_period(){
 
-// config
-const config = {
-  type: 'line',
-  data: data,
-  options: {
-    responsive: true,
-    interaction: {
-      mode: 'index',
-      intersect: false,
-    },
-    stacked: false,
-    plugins: {
-      title: {
-        display: true,
-        text: 'Chart.js Line Chart - Multi Axis'
+  // setup
+  const DATA_COUNT2 = 7;
+  const NUMBER_CFG = {count: DATA_COUNT2, min: -100, max: 100};
+
+  const labels2 = ['السبت','الجمعة','الخميس','الاربعاء','الثلاثاء','الاثنين','الاحد'];
+
+  const data2 = {
+    labels: labels2,
+    datasets: [
+      {
+        label: 'ايجابي',
+        data: positiveData,
+        borderColor: 'rgba(255, 206, 86, 1)',
+        backgroundColor: 'rgba(255, 206, 86, 1)',
+        yAxisID: 'y',
+      },
+      {
+        label: 'سلبي',
+        data: negativeData,
+        borderColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: 'rgba(255, 99, 132, 1)',
+        yAxisID: 'y',
+      },
+      {
+        label: 'طبيعي',
+        data: neutralData,
+        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgba(54, 162, 235, 1)',
+        yAxisID: 'y',
+      }
+    ]
+  };
+
+  // config
+  const config2 = {
+    type: 'line',
+    data: data2,
+    options: {
+      responsive: true,
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+      stacked: false,
+      plugins: {
+        legend: {
+        labels: {
+          color: 'rgba(240, 248, 255, 1)', 
+          font: {
+            size: 14,
+            family: "'Tajawal', sans-serif",
+          }
+        }
+      },
+        title: {
+          display: true,
+          text: 'تفاعل مع الأيام',
+          color: 'rgba(240, 248, 255, 1)',
+          font: {
+          size: 22,
+          family: "'Tajawal', sans-serif",
+          },
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: 'rgba(240, 248, 255, 1)', 
+            font: {
+            size: 14, 
+            family: "'Tajawal', sans-serif",
+            },
+            },
+          grid: {
+            color: 'rgba(255, 255, 255, 0.3)',
+        },
+        },
+        y: {
+          type: 'linear',
+          display: true,
+          position: 'left',
+          ticks: {
+            color: 'rgba(240, 248, 255, 1)', 
+            font: {
+            size: 14, 
+            family: "'Tajawal', sans-serif",
+            },
+            },
+          grid: {
+            color: 'rgba(255, 255, 255, 0.3)',
+        },
+        },
       }
     },
-    scales: {
-      y: {
-        type: 'linear',
-        display: true,
-        position: 'left',
-      },
-      y1: {
-        type: 'linear',
-        display: true,
-        position: 'right',
+  };
+  const actions2 = [
+    {
+      name: 'Randomize',
+      handler(chart2) {
+        chart2.data.datasets.forEach(dataset => {
+          dataset.data = Utils.numbers({count: chart2.data.labels.length, min: -100, max: 100});
+        });
+        chart2.update();
+      }
+    },
+  ];
+  var chart2 = new Chart(ctx2, config2, actions2)
 
-        // grid line settings
-        grid: {
-          drawOnChartArea: false, // only want the grid lines for one axis to show up
-        },
+  // add event listeners for the buttons
+  document.getElementById("1").addEventListener('click', () => {
+    chart2.destroy();
+    Month_period();
+  });
+  }
+
+  function Month_period(){
+  // setup
+  const DATA_COUNT3 = 12;
+  const NUMBER_CFG = {count: DATA_COUNT3, min: -100, max: 100};
+
+  const labels3 = ['12','11', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1'];
+
+  const data3 = {
+    labels: labels3,
+    datasets: [
+      {
+        label: 'ايجابي',
+        data: postiveD,
+        borderColor: 'rgba(255, 206, 86, 1)',
+        backgroundColor: 'rgba(255, 206, 86, 1)',
+        yAxisID: 'y',
       },
-    }
-  },
-};
-const actions = [
-  {
-    name: 'Randomize',
-    handler(chart) {
-      chart.data.datasets.forEach(dataset => {
-        dataset.data = Utils.numbers({count: chart.data.labels.length, min: -100, max: 100});
-      });
-      chart.update();
-    }
-  },
-];
-var chart = new Chart(ctx2, config, actions)
+      {
+        label: 'سلبي',
+        data: NegativeD,
+        borderColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: 'rgba(255, 99, 132, 1)',
+        yAxisID: 'y',
+      },
+      {
+        label: 'طبيعي',
+        data: NatD,
+        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgba(54, 162, 235, 1)',
+        yAxisID: 'y',
+      }
+    ]
+  };
+
+  // config
+  const config3 = {
+    type: 'line',
+    data: data3,
+    options: {
+      responsive: true,
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+      stacked: false,
+      plugins: {
+        legend: {
+        labels: {
+          color: 'rgba(240, 248, 255, 1)', 
+          font: {
+            size: 14,
+            family: "'Tajawal', sans-serif",
+          }
+        }
+      },
+        title: {
+          display: true,
+          text: 'تفاعل مع الاشهر',
+          color: 'rgba(240, 248, 255, 1)',
+          font: {
+          size: 22,
+          family: "'Tajawal', sans-serif",
+          },
+        }
+      },
+      scales: {
+        x :{
+          ticks: {
+            color: 'rgba(240, 248, 255, 1)', 
+            font: {
+            size: 14, 
+            family: "'Tajawal', sans-serif",
+            },
+          },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.3)',
+          },
+        },
+        y: {
+          type: 'linear',
+          display: true,
+          position: 'left',
+          ticks: {
+            color: 'rgba(240, 248, 255, 1)', 
+            font: {
+            size: 14, 
+            family: "'Tajawal', sans-serif",
+            },
+          },
+          grid: {
+            color: 'rgba(255, 255, 255, 0.3)',
+          },
+        },
+      }
+    },
+  };
+  const actions3 = [
+    {
+      name: 'Randomize',
+      handler(chart3) {
+        chart3.data.datasets.forEach(dataset => {
+          dataset.data = Utils.numbers({count: chart3.data.labels.length, min: -100, max: 100});
+        });
+        chart3.update();
+      }
+    },
+  ];
+  chart3 = new Chart(ctx2, config3, actions3)
+  // add event listeners for the buttons
+  document.getElementById("0").addEventListener('click', () => {
+    chart3.destroy();
+    Days_period();
+  });
+  }
+  Days_period();
+
+
 </script>
 <script>
   var reactions = JSON.parse("{{ sentiment_data|escapejs }}");
@@ -381,3 +562,7 @@ var chart = new Chart(ctx2, config, actions)
 var chart = new Chart(pie_ctx, config_pie, actions_pie)
 
 </script>
+</div>
+<button id="btnPrint"> اطبع </h4>
+</body>
+</html>

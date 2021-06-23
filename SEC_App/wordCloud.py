@@ -25,7 +25,7 @@ from ar_wordcloud import ArabicWordCloud
 
 '''___________________________________ STEP1: Data Gathring ____________________________________ '''
 
-def search(keywords , Since = None, Until = None ):
+def search(keywords , limit = 1, Since = None, Until = None ):
     '''
     [PARAMETERS] 
         Since: 'yyyy-mm-dd' (string)
@@ -39,7 +39,7 @@ def search(keywords , Since = None, Until = None ):
     c.Hide_output = True
     
     #c.Limit = 5 if not (Since or Until) else None
-    c.Limit = 1
+    c.Limit = int(limit) if (limit != "" and limit != None) else 1
     #PANDAS
     c.Pandas = True
     c.Pandas_au = True
@@ -197,6 +197,17 @@ def word_cloud(dtm_df,path = None):
     #save word cloud 
     if path:
         awc.to_file(path)
+
+def predict_sentiments(tweets_df, dtm):
+    # save the model to disk
+    filename = 'version1_model.sav'
+    # some time later...
+    # load the model from disk
+    loaded_model = pickle.load(open(filename, 'rb'))
+    result = loaded_model.predict(dtm)
+    print('result:', result)
+    tweets_df['sentiment']=result
+    return tweets_df
 
 '''___________________________________ Main  ____________________________________ '''
 

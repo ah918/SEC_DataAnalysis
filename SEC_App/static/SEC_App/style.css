@@ -1,6 +1,14 @@
 .input_box {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.4);
     border-radius: 20px;
+    border: 0px;
+    display: inline-block;
+}
+#input-box-wrapper {
+    position:absolute;
+    left:50%;
+    top:35%;
+    margin:-100px 0 0 -210px;
 }
 
 body, html {
@@ -13,10 +21,11 @@ body, html {
 input, select, button {
     border-radius: 7px;
     background-color: rgba(255, 255, 255, 0.8);
+    border: 0px;
 }
 
 button {
-    background-color:rgb(10, 158, 10);
+    background-color:#4CAF50 ;
     color: rgb(240, 248, 255);
     padding-left: 15px;
     padding-right: 15px;
@@ -80,7 +89,7 @@ h1 {
     margin-top: 5%;
 } 
 
-#myCahrt-container, #wordcloud-container, #pie-chart-container {
+#myCahrt-container, #wordcloud-container, #pie-chart-container, #week-days-container {
     width:500px !important;
     height:500px !important;
     position: relative;
@@ -92,7 +101,6 @@ h1 {
     text-align: center;
     margin: 70px;
 }
-
 
 #tweet-list {
     text-align: right;

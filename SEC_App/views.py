@@ -51,19 +51,19 @@ def analysis(request):
 
     #create word cloud
     #Clean dataframe
-    # tweets_df_cleaned = cleanDataframe(tweets_df)
-    # #Clean text
-    # tweets_df_cleaned['tweet_text'] =  tweets_df_cleaned['tweet_text'].apply(lambda text : cleanTxt(text,Emoji_Dict(),stopwords_set()))
-    # #Preprocessing text: create document term matrix 
-    # dtm = dtm_df(tweets_df_cleaned['tweet_text'])
+    tweets_df_cleaned = cleanDataframe(tweets_df)
+    #Clean text
+    tweets_df_cleaned['tweet_text'] =  tweets_df_cleaned['tweet_text'].apply(lambda text : cleanTxt(text,Emoji_Dict(),stopwords_set()))
+    #Preprocessing text: create document term matrix 
+    dtm = dtm_df(tweets_df_cleaned['tweet_text'])
     #(create+show,save:optional) arabic word cloud 
     #word_cloud(dtm, path='SEC_App/static/SEC_App/wordcloud.png')
 
-    #tweets_df = predict_sentiments(tweets_df, dtm)
+    tweets_df = predict_sentiments(tweets_df_cleaned, dtm)
 
-    reactions = get_reactions_dic(tweets_df)
-    period_data = get_period_dic(tweets_df)
-    sentiment_data = get_sentiment_dic(tweets_df)
+    reactions = get_reactions_dic(tweets_df_cleaned)
+    period_data = get_period_dic(tweets_df_cleaned)
+    sentiment_data = get_sentiment_dic(tweets_df_cleaned)
 
     
     print('limit:', request.POST.get('limit',''))
@@ -76,7 +76,8 @@ def get_reactions_dic(tweets_df):
     tweets_df_reactions['nlikes']= tweets_df['nlikes']
     tweets_df_reactions['nretweets'] = tweets_df['nretweets']
     tweets_df_reactions['nreplies'] = tweets_df['nreplies']
-    tweets_df_reactions['sentiment'] = [random.randint(-1, 1) for i in range(tweets_df_reactions.shape[0])]
+    tweets_df_reactions['sentiment'] = tweets_df['sentiment']
+    #tweets_df_reactions['sentiment'] = [random.randint(-1, 1) for i in range(tweets_df_reactions.shape[0])]
     tweets_df_reactions_negative = pd.DataFrame(tweets_df_reactions[tweets_df_reactions['sentiment']==-1])
     tweets_df_reactions_neutral = pd.DataFrame(tweets_df_reactions[tweets_df_reactions['sentiment']==0])
     tweets_df_reactions_positive = pd.DataFrame(tweets_df_reactions[tweets_df_reactions['sentiment']==1])
@@ -99,7 +100,7 @@ def get_period_dic(tweets_df):
     #read tweets_df
     
     periods_df = tweets_df
-    periods_df['sentiment'] = [random.randint(-1, 1) for i in range(periods_df.shape[0])]
+    #periods_df['sentiment'] = [random.randint(-1, 1) for i in range(periods_df.shape[0])]
     tweets_df_negative = pd.DataFrame(periods_df[periods_df['sentiment']==-1])
     tweets_df_neutral = pd.DataFrame(periods_df[periods_df['sentiment']==0])
     tweets_df_positive = pd.DataFrame(periods_df[periods_df['sentiment']==1])
@@ -156,16 +157,15 @@ def getListMonths(tweets_df_sen):
           mon= e[5:7]
           newMon.append(mon)
           z=z+1
-    print('month', mon)
     months= [newMon.count("12"),newMon.count("11"),newMon.count("10"),newMon.count("09"),newMon.count("08"),newMon.count("07"),newMon.count("06"),newMon.count("05"),newMon.count("04"),newMon.count("03"),newMon.count("02"),newMon.count("01")]      
     return months
 
 def get_sentiment_dic(tweets_df):
     sentiment_df = pd.DataFrame()
-    sentiment_df['sentiment'] = [random.randint(-1, 1) for i in range(tweets_df.shape[0])]
+    sentiment_df['sentiment'] = tweets_df['sentiment']
     sentiment_count = sentiment_df['sentiment'].value_counts()
     sentiment_dic = {
-        'sentiment': [int(sentiment_count[1]), int(sentiment_count[-1]), int(sentiment_count[0])]
+        'sentiment': [int(sentiment_count[1]), int(sentiment_count[-1]), int(sentiment_count[0])] #int(sentiment_count[1])
     }
     print(sentiment_count)
     return dumps(sentiment_dic)

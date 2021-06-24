@@ -21,6 +21,8 @@ from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import CountVectorizer
     #For word cloud
 from ar_wordcloud import ArabicWordCloud
+import joblib
+
 
 
 '''___________________________________ STEP1: Data Gathring ____________________________________ '''
@@ -166,13 +168,17 @@ def dtm_df(text_column):
 
     max_df = int(text_column.shape[0]*0.3)
     min_df = int(text_column.shape[0]*0.01)
-    vectorizer = CountVectorizer(min_df=min_df,max_features=500)
+    
+    filename = 'vectorizer1.sav'
+    vectorizer = pickle.load(open(filename, 'rb'))
+    #vectorizer = joblib.load("vectorizer2.sav")
     
     text_column = text_column.apply(lambda x : " ".join(x)) # convert column values into string 
-    vectorizer_df = vectorizer.fit_transform(text_column)
+    vectorizer_df = vectorizer.transform(text_column)
     dtm_df = pd.DataFrame(vectorizer_df.toarray(), columns=vectorizer.get_feature_names())
     dtm_df.index = text_column.index
     return dtm_df
+
 
 '''___________________________________  Word Cloud   ____________________________________ '''
 
@@ -200,10 +206,10 @@ def word_cloud(dtm_df,path = None):
 
 def predict_sentiments(tweets_df, dtm):
     # save the model to disk
-    filename = 'version1_model.sav'
+    filename = 'model1.sav'
     # some time later...
     # load the model from disk
-    loaded_model = pickle.load(open(filename, 'rb'))
+    loaded_model = joblib.load(filename)
     result = loaded_model.predict(dtm)
     print('result:', result)
     tweets_df['sentiment']=result

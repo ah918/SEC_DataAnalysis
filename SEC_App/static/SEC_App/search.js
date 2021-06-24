@@ -1,3 +1,4 @@
+
 function keywords(){
     var text = document.getElementById('keyword').value;
     var text_list = text.split(' ');
@@ -32,6 +33,4 @@ function loadingPage(){
     return true;
 }
 
-function windowPrint(){
-    document.querySelector("#results-page").contentWindow.print()
-}
+

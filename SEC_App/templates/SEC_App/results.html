@@ -39,6 +39,19 @@
         <td>{{to_date}}</td>
       </tr>
     </table>
+    <form action="{% url 'SEC_App:history' %}" method="POST">
+      {% csrf_token %}
+      <label for="query-num">رقم الطلب</label>
+                <select name="query-num" id="query-num" onchange="this.form.submit()">
+                    {% for req_num in requests_ids %}
+                      {% if req_num == req.id %}
+                        <option value={{req_num}} selected="selected">{{ req_num }}</option>
+                      {% else %}
+                        <option value={{req_num}}>{{ req_num }}</option>
+                      {% endif %}
+                    {% endfor %}
+                </select>
+    </form>
   </div>
   <br><br>
   <div class="center-wrapper">
@@ -57,9 +70,10 @@
  </div>
   <br><br><br>
   <div id="week-days-container" style='display: "inline-block"'>
-    <canvas id="myChart2" width="500" height="500" style='display: "inline-block" !important;'></canvas>
+    <canvas id="myChart2" width="30%" height="30%" style='display: "inline-block" !important;'></canvas>
     <button id="0" type="button" >أيام</button>
     <button id="1" type="button" >أشهر</button>
+    <button id="2" type="button" >ساعات</button>
   </div>
   <div id="wordcloud-container">
     <span>سحابة الكلمات</span>
@@ -155,6 +169,9 @@
               family: "'Tajawal', sans-serif",
               },
             },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.3)',
+            },
           },
           y: {
             stacked: true,
@@ -164,6 +181,9 @@
               size: 14, 
               family: "'Tajawal', sans-serif",
               },
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.3)',
             },
           }
         }
@@ -192,9 +212,13 @@
   var neutralData = period_data['neutralDays'];
   var positiveData = period_data['positiveDays'];
 
-  var postiveD = period_data['negativeMonths'];
-  var NegativeD = period_data['neutralMonths'];
-  var NatD = period_data['positiveMonths'];
+  var NegativeD = period_data['negativeMonths'];
+  var NatD = period_data['neutralMonths'];
+  var postiveD = period_data['positiveMonths'];
+
+  var postiveH = period_data['positiveHours'];
+  var NegativeH = period_data['negativeHours'];
+  var NatH = period_data['neutralHours'];
 
   var ctx2 = document.getElementById("myChart2");
 
@@ -214,21 +238,21 @@
         label: 'ايجابي',
         data: positiveData,
         borderColor: 'rgba(255, 206, 86, 1)',
-        backgroundColor: 'rgba(255, 206, 86, 1)',
+        backgroundColor: 'rgba(255, 206, 86, 0.2)',
         yAxisID: 'y',
       },
       {
         label: 'سلبي',
         data: negativeData,
         borderColor: 'rgba(255, 99, 132, 1)',
-        backgroundColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
         yAxisID: 'y',
       },
       {
         label: 'طبيعي',
         data: neutralData,
         borderColor: 'rgba(54, 162, 235, 1)',
-        backgroundColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
         yAxisID: 'y',
       }
     ]
@@ -309,11 +333,14 @@
   ];
   var chart2 = new Chart(ctx2, config2, actions2)
 
-  // add event listeners for the buttons
   document.getElementById("1").addEventListener('click', () => {
-    chart2.destroy();
-    Month_period();
-  });
+  chart2.destroy();
+  Month_period();
+});
+document.getElementById("2").addEventListener('click', () => {
+  chart2.destroy();
+  Hours_period();
+});
   }
 
   function Month_period(){
@@ -321,7 +348,7 @@
   const DATA_COUNT3 = 12;
   const NUMBER_CFG = {count: DATA_COUNT3, min: -100, max: 100};
 
-  const labels3 = ['12','11', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1'];
+  const labels3 = ['ديسمبر', 'نوفمبر', 'أكتوبر', 'سبتمبر', 'أغسطس', 'يوليو', 'يونيو', 'مايو', 'أبريل', 'مارس', 'فبراير', 'يناير'];
 
   const data3 = {
     labels: labels3,
@@ -330,21 +357,21 @@
         label: 'ايجابي',
         data: postiveD,
         borderColor: 'rgba(255, 206, 86, 1)',
-        backgroundColor: 'rgba(255, 206, 86, 1)',
+        backgroundColor: 'rgba(255, 206, 86, 0.2)',
         yAxisID: 'y',
       },
       {
         label: 'سلبي',
         data: NegativeD,
         borderColor: 'rgba(255, 99, 132, 1)',
-        backgroundColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
         yAxisID: 'y',
       },
       {
         label: 'طبيعي',
         data: NatD,
         borderColor: 'rgba(54, 162, 235, 1)',
-        backgroundColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
         yAxisID: 'y',
       }
     ]
@@ -425,13 +452,137 @@
   ];
   chart3 = new Chart(ctx2, config3, actions3)
   // add event listeners for the buttons
-  document.getElementById("0").addEventListener('click', () => {
-    chart3.destroy();
-    Days_period();
-  });
+document.getElementById("0").addEventListener('click', () => {
+  chart3.destroy();
+  Days_period();
+});
+document.getElementById("2").addEventListener('click', () => {
+  chart3.destroy();
+  Hours_period()
+});
   }
   Days_period();
 
+function Hours_period(){
+
+  // setup
+  const DATA_COUNT4 = 24;
+  const NUMBER_CFG = {count: DATA_COUNT4, min: -100, max: 100};
+
+  const labels4 = ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23'];
+
+  const data4 = {
+    labels: labels4,
+    datasets: [
+      {
+        label: 'ايجابي',
+        data: postiveH,
+        borderColor: 'rgba(255, 206, 86, 1)',
+        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+        yAxisID: 'y',
+      },
+      {
+        label: 'سلبي',
+        data: NegativeH,
+        borderColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        yAxisID: 'y',
+      },
+      {
+        label: 'طبيعي',
+        data: NatH,
+        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        yAxisID: 'y',
+      }
+    ]
+  };
+
+  // config
+  const config4 = {
+    type: 'line',
+    data: data4,
+    options: {
+      responsive: true,
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+      stacked: false,
+      plugins: {
+        legend: {
+        labels: {
+          color: 'rgba(240, 248, 255, 1)', 
+          font: {
+            size: 14,
+            family: "'Tajawal', sans-serif",
+          }
+        }
+      },
+        title: {
+          display: true,
+          text: 'تفاعل مع الساعات',
+          color: 'rgba(240, 248, 255, 1)',
+          font: {
+          size: 22,
+          family: "'Tajawal', sans-serif",
+          },
+        }
+      },
+      scales: {
+        x :{
+          ticks: {
+            color: 'rgba(240, 248, 255, 1)', 
+            font: {
+            size: 14, 
+            family: "'Tajawal', sans-serif",
+            },
+          },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.3)',
+          },
+        },
+        y: {
+          type: 'linear',
+          display: true,
+          position: 'left',
+          ticks: {
+            color: 'rgba(240, 248, 255, 1)', 
+            font: {
+            size: 14, 
+            family: "'Tajawal', sans-serif",
+            },
+          },
+          grid: {
+            color: 'rgba(255, 255, 255, 0.3)',
+          },
+        },
+      }
+    },
+  };
+  const actions4 = [
+    {
+      name: 'Randomize',
+      handler(chart2) {
+        chart4.data.datasets.forEach(dataset => {
+          dataset.data = Utils.numbers({count: chart4.data.labels.length, min: -100, max: 100});
+        });
+        chart4.update();
+      }
+    },
+  ];
+  var chart4 = new Chart(ctx2, config4, actions4)
+
+  // add event listeners for the buttons
+  document.getElementById("1").addEventListener('click', () => {
+    chart4.destroy();
+    Month_period()
+  });
+  document.getElementById("0").addEventListener('click', () => {
+    chart4.destroy();
+    Days_period()
+  });
+  }
 
 </script>
 <script>
@@ -446,9 +597,9 @@
         label: 'Sentiment',
         data: reactions['sentiment'],
         backgroundColor: [
-        'rgb(54, 162, 235)',
+        'rgb(255, 205, 86)',
         'rgb(255, 99, 132)',
-        'rgb(255, 205, 86)'
+        'rgb(54, 162, 235)'
         ],
         hoverOffset: 4
       }

@@ -89,7 +89,7 @@ h1 {
     margin-top: 5%;
 } 
 
-#myCahrt-container, #wordcloud-container, #pie-chart-container, #week-days-container {
+#myCahrt-container, #wordcloud-container, #pie-chart-container, #week-days-container{
     width:500px !important;
     height:500px !important;
     position: relative;

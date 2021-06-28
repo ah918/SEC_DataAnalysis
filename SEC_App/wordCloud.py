@@ -21,13 +21,14 @@ from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import CountVectorizer
     #For word cloud
 from ar_wordcloud import ArabicWordCloud
+    #object saving
 import joblib
 
 
 
 '''___________________________________ STEP1: Data Gathring ____________________________________ '''
 
-def search(keywords , limit = 1, Since = None, Until = None ):
+def search(keywords , limit, Since = None, Until = None ):
     '''
     [PARAMETERS] 
         Since: 'yyyy-mm-dd' (string)
@@ -75,9 +76,15 @@ def cleanDataframe(Tweets_df):
     df_clean.urls = df_clean.urls.apply(lambda x: " ".join(x))
     #drop duplicates 
     df_clean = df_clean.drop_duplicates(subset=["tweet_text"],keep='first')
+    #drop @alkahraba and @alkahrabacare tweets
+    df_clean.drop(df_clean[df_clean['username'] == "AlkahrabaCare"].index, inplace = True)
+    df_clean.drop(df_clean[df_clean['username'] == "ALKAHRABA"].index, inplace = True) 
+    df_clean.drop(df_clean[df_clean['username'] == "alKahrabaFriend"].index, inplace = True)
+    print('df_clean[username]', df_clean['username'].value_counts())
     #only keep arabic tweets and then drop language column
     df_clean = df_clean.loc[df_clean['language'] == 'ar']
     df_clean = df_clean.drop(['language'], axis=1)
+    
     return df_clean
 
 
@@ -193,9 +200,13 @@ def word_cloud(dtm_df,path = None):
     awc = ArabicWordCloud(background_color="black",font='NotoSansArabic-ExtraBold.ttf')
     dic_df = {}
     #create dictionary of arabic word with its acurance count
-    for column in dtm_df.columns[1:50]:
+    counter = 0
+    for column in dtm_df.columns:
         if not re.search('[a-zA-Z]+',column):
             dic_df[column]= dtm_df[column].sum()
+            counter += 1
+            if counter >= 50:
+                break
     #create word cloud         
     dic_df = awc.from_dict(dic_df, ignore_stopwords=True)
     #show word cloud

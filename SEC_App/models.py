@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models.deletion import CASCADE
+from django.db.models.fields.json import JSONField
 
 # Create your models here.
 class Request(models.Model):
@@ -37,4 +38,21 @@ class Tweet(models.Model):
     name = models.TextField()
     request = models.ForeignKey(Request, on_delete=CASCADE)
    
-   
+
+class Analysis(models.Model):
+    """
+    {'tweets_list': tweet_list, 'reactions': reactions, 'req': req, 
+    'from_date':from_date, 'to_date':to_date, 'period_data':period_data, 
+    'sentiment_data':sentiment_data, 'num_tweets':tweets_df.shape[0], 
+    'requests_ids':request.session['requests_ids']}
+    """
+
+    request = models.ForeignKey(Request, on_delete=CASCADE)
+    tweets_list = models.JSONField()
+    dtm = models.JSONField()
+    reactions = models.JSONField()
+    from_date = models.TextField()
+    to_date = models.TextField()
+    period_data = models.JSONField()
+    sentiment_data = models.JSONField()
+    num_tweets = models.IntegerField()

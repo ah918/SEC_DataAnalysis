@@ -6,7 +6,7 @@
     <title>تحليل بيانات شركة الكهرباء</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     {% load static %}
-    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=1">
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=2">
     <script src="{% static 'SEC_App/search.js' %}" defer></script>
 
     <!-- jQuery Datepicker -->
@@ -44,7 +44,7 @@
             <form action="{% url 'SEC_App:analysis' %}"  method="post" onSubmit="loadingPage()">
                 {% csrf_token %}
                 <label for='keyword'>كلمات البحث</label>
-                <input list="keywords" id="keyword" name="keyword" onKeypress="keywords()" placeholder="مثال: كهرباء فاتورة انقطاع ..."/>
+                <input list="keywords" id="keyword" name="keyword" onKeypress="keywords()" placeholder="مثال: كهرباء فاتورة انقطاع ..." size="37"/>
                 <datalist id='keywords'>
                     <option value="كهرباء">
                     <option value="كهرب">
@@ -55,10 +55,10 @@
                     <option value=1>AND</option>
                 </select><br><br>
                 
-                <label for="domain">نطاق البحث</label>
+                <label for="domain">نطــاق البحث</label>
                 <select name="domain" id="domain">
-                    <option value=0 dir="ltr">@ALKAHRABA OR @AlkahrabaCare OR كلمة البحث</option>
-                    <option value=1 class="hide" id="keyword_option">كلمة البحث فقط</option>
+                    <option value=0 dir="ltr" size="46">@ALKAHRABA OR @AlkahrabaCare OR كلمة البحث</option>
+                    <option value=1 class="hide" id="keyword_option" size="46">كلمة البحث فقط</option>
                 </select><br><br>
                 <button type="submit">حلل</button>
         </fieldset>
@@ -67,22 +67,25 @@
         <fieldset class='input_box'>
             <legend><h2>مخصص</h2></legend>
 
-            <label for="period_start">الفترة من</label>
-            <input id="period_start" name="period_start">
+            <label for="period_start">الفـتـرة من</label>
+            <input id="period_start" name="period_start" size="21">
             
             <label for="end_period">إلى </label>
-            <input id="end_period" name="end_period">
+            <input id="end_period" name="end_period" size="22">
             <br><br>
             <label for="start_time">الوقت من</label>
-            <input type="time" id="start_time" name="start_time">
-            <label for="end_time">إلى </label>
-            <input type="time" id="end_time" name="end_time">
+            <input type="time" id="start_time" name="start_time" size="21">
+            <label for="end_time">إلى  </label>
+            <input type="time" id="end_time" name="end_time" size="22">
             <br><br>
-            <label for="limit">الحد الأعلى للتغريدات</label>
-            <input type="text" value="100" size="10" id='limit' name='limit'>
+            <label for="limit" id='limit-label'>الحد الأعلى للتغريدات</label>
+            <input type="text" value="100" size="22" id='limit' name='limit'>
             </fieldset>
             </div>
         </form>
+        {% if query_num != None %}
+            <a href="{% url 'SEC_App:history' %}?query_num={{ query_num }}"><button>عمليات البحث السابقة</button></a>
+        {% endif %}
     </div>
     
 </body>

@@ -6,7 +6,7 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     {% load static %}
-    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=18">
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=19">
     <script  type="module" src="{% static 'SEC_App/search.js' %}" defer></script>
 
     <!-- Tajawal font -->
@@ -41,8 +41,8 @@
     </table>
     <form action="{% url 'SEC_App:history' %}" method="POST">
       {% csrf_token %}
-      <label for="query-num">رقم الطلب</label>
-                <select name="query-num" id="query-num" onchange="this.form.submit()">
+      <label for="query_num">رقم الطلب</label>
+                <select name="query_num" id="query_num" onchange="this.form.submit()">
                     {% for req_num in requests_ids %}
                       {% if req_num == req.id %}
                         <option value={{req_num}} selected="selected">{{ req_num }}</option>
@@ -51,7 +51,10 @@
                       {% endif %}
                     {% endfor %}
                 </select>
-    </form>
+          </form>
+  </div>
+  <div id="home-button-div">
+    <a href="{% url 'SEC_App:search' %}"><img id='home-button' src="{% static 'SEC_App/home-page.svg' %}" alt="الصفحة الرئيسية" style='display: "inline-block"'></a>
   </div>
   <br><br>
   <div class="center-wrapper">
@@ -793,3 +796,5 @@ function imgToBase64(url, callback, imgVariable) {
 </script>
 </body>
 </html>
+
+return sum(range(0,max(nums)))-sum(nums) if sum(range(0,max(nums)))-sum(nums) != 0 else max(nums)+1

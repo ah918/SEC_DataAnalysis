@@ -4,6 +4,26 @@
     border: 0px;
     display: inline-block;
 }
+
+#keyword {
+    margin-left: 5px;
+}
+
+#start_time{
+    padding-left: 24px;
+    padding-right: 24px;
+    margin-left:2px;
+}
+
+#end_time{
+    padding-left: 28px;
+    padding-right: 27px;
+}
+
+#limit-label {
+    margin-right: 100px;
+}
+
 #input-box-wrapper {
     position:absolute;
     left:50%;
@@ -125,5 +145,10 @@ p {
 font-size: 1.5rem;
 }
   
-  
-  
+#home-button {
+    height: 33px;
+    width: 33px;
+    position: absolute;
+    margin-left: 5%;
+    margin-right: 70%;
+}

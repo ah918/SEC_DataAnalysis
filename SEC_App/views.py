@@ -19,13 +19,20 @@ from .wordCloud import *
 # Create your views here.
 
 def searchView(request):
+    """
+    home page / search page
+    """
+
     if 'requests_ids' in request.session and request.session['requests_ids'] != None:
         return render(request,'SEC_App/search.html', {'query_num': request.session['requests_ids'][-1]})
     else: 
         return render(request,'SEC_App/search.html', {'query_num': None})
 
 def analysis(request):
-    
+    """
+    results and analysis page
+    """
+
     #create request model opject
     req = create_request(request)
     
@@ -84,6 +91,9 @@ def analysis(request):
                                                     'requests_ids':request.session['requests_ids']})
 
 def history(request):
+    """
+    previous searches/requests page
+    """
     #retrieve request model opject
     if request.POST.get('query_num') != None:
         req = Request.objects.get(id=request.POST.get('query_num'))

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang='ar' dir='rtl'>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=1">
+
+    <!-- Tajawal font -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal&display=swap" rel="stylesheet">
+
+    <title></title>
+</head>
+<body>
+    <div id='error-message'>
+    <h2>لا توجد تغريدات ):</h2>
+    <h3>حاول تغيير كلمة البحث أو نطاق البحث أو الفترة</h3>
+    <br><br>
+    <a href="{% url 'SEC_App:search' %}" style="display: block;"><img id='home-button' src="{% static 'SEC_App/home-page.svg' %}" alt="الصفحة الرئيسية" style='display: "inline-block"'></a>
+    </div>
+</body>
+</html>
+

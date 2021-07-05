@@ -10,14 +10,14 @@
 }
 
 #start_time{
-    padding-left: 24px;
-    padding-right: 24px;
+    padding-left: 22px;
+    padding-right: 22px;
     margin-left:2px;
 }
 
 #end_time{
-    padding-left: 28px;
-    padding-right: 27px;
+    padding-left: 22px;
+    padding-right: 22px;
 }
 
 #limit-label {
@@ -134,11 +134,18 @@ h1 {
     position: relative;
   }
   
-.absolute-center {
+.absolute-center{
 position:absolute;
 top: 60%;
 left: 50%;
 transform: translate(-50%, -60%);
+}
+
+#error-message {
+    position:absolute;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -10%);
 }
 
 .text-center{

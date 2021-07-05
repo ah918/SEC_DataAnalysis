@@ -23,6 +23,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from ar_wordcloud import ArabicWordCloud
     #object saving
 import joblib
+from django.http import HttpResponse
 
     #For arabert
 # from arabert.preprocess import ArabertPreprocessor
@@ -71,7 +72,7 @@ def search(keywords , limit, Since = None, Until = None ):
     c.Until = Until
     twint.run.Search(c)
     Tweets_df = twint.storage.panda.Tweets_df[['id','date','place','tweet','hashtags','urls',
-                                               'nlikes','nretweets','nreplies','username','name','language']]
+                                            'nlikes','nretweets','nreplies','username','name','language']]
     Tweets_df.rename({'id': 'tweet_id', 'tweet': 'tweet_text'}, axis=1, inplace=True)
     return Tweets_df
 
@@ -94,11 +95,10 @@ def cleanDataframe(Tweets_df):
     df_clean.urls = df_clean.urls.apply(lambda x: " ".join(x))
     #drop duplicates 
     df_clean = df_clean.drop_duplicates(subset=["tweet_text"],keep='first')
-    #drop @alkahraba and @alkahrabacare tweets
+    #drop @alkahraba, @alkahrabacare, and @alKahrabaFriend tweets
     df_clean.drop(df_clean[df_clean['username'] == "AlkahrabaCare"].index, inplace = True)
     df_clean.drop(df_clean[df_clean['username'] == "ALKAHRABA"].index, inplace = True) 
     df_clean.drop(df_clean[df_clean['username'] == "alKahrabaFriend"].index, inplace = True)
-    print('df_clean[username]', df_clean['username'].value_counts())
     #only keep arabic tweets and then drop language column
     df_clean = df_clean.loc[df_clean['language'] == 'ar']
     df_clean = df_clean.drop(['language'], axis=1)
@@ -176,7 +176,7 @@ def cleanTxt(text,Emoji_Dict,stopwords_set):
     text = re.sub(r"\b[a-zA-Z0–9]\b", "", text) #Removing single charcter word
     
     text = convert_emojis_to_word(text,Emoji_Dict)
-    text1 = tokenize(text)
+    text = tokenize(text)
 
     return [word for word in text if word not in stopwords_set and len(word)>3 ]
 

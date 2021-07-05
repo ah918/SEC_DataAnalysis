@@ -42,7 +42,13 @@ def analysis(request):
         request.session['requests_ids'] = [req.id]
 
     #Search for tweets
-    tweets_df = search(req.keyword, limit=request.POST.get('limit',''), Since = req.period_start, Until = req.period_end)
+    try:
+        tweets_df = search(req.keyword, limit=request.POST.get('limit',''), Since = req.period_start, Until = req.period_end)
+    except:
+        return render(request, 'SEC_App/error.html')
+
+    #Save request opject
+    req.save()
     
     # create and save tweets model objects
     print(tweets_df.shape[0])
@@ -75,7 +81,7 @@ def analysis(request):
     #Preprocessing text: create document term matrix 
     dtm = dtm_df(tweets_df_cleaned_text)
     #(create+show,save:optional) arabic word cloud 
-    # word_cloud(dtm, path='SEC_App/static/SEC_App/wordcloud.png')
+    word_cloud(dtm, path='SEC_App/static/SEC_App/wordcloud.png')
 
     # prepare tweet list to appear in result.html
     tweet_list = tweets_df_cleaned.head(50)['tweet_text'].to_list()
@@ -279,14 +285,14 @@ def create_request(request):
         if rangeOfsearch == "0":
             print("i am inside rangeOfsearch == 0")
             if len(keywords_list)<=1:
-                keyword = "@ALKAHRABA OR @AlkahrabaCare OR " + keyword
+                keyword = "(@ALKAHRABA OR @AlkahrabaCare) AND " + keyword
                 print("i am inside len(keywords_list)<=1", keywords_list)
             elif includeAll == '1':
                 print("i am inside and and", keywords_list)
                 keyword = "(@ALKAHRABA OR @AlkahrabaCare) AND "+' AND '.join(keywords_list)
             else:
                 print("i am inside or or", keywords_list)
-                keyword = "@ALKAHRABA OR @AlkahrabaCare OR "+' OR '.join(keywords_list)
+                keyword = "(@ALKAHRABA OR @AlkahrabaCare AND) "+' OR '.join(keywords_list)
         elif len(keywords_list)==1:
             keyword = keyword
         elif includeAll == '1':
@@ -318,9 +324,6 @@ def create_request(request):
 
     #creat request opject
     req = Request(keyword=keyword, period_start=period_start, period_end=period_end, time_start=time_start, time_end=time_end, rangeOfsearch=rangeOfsearch, date_time=date_time, includeAll=includeAll)
-
-    #Save request opject
-    req.save()
 
     return req
 

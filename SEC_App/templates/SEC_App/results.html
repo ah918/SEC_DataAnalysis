@@ -19,7 +19,7 @@
     <!-- jspdf -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
     
-
+    <title>النتائج والتحليلات</title>
 </head>
 <body>  
   <div id='pdf-container'>
@@ -81,7 +81,7 @@
   <div id="wordcloud-container">
     <span>سحابة الكلمات</span>
     <br><br>
-    <img src="{% static 'SEC_App/wordcloud.png' %}" alt="wordcloud" style='display: "inline-block"'>
+    <img src="{% static 'SEC_App/wordcloud.png' %}?version={{req.id}}" alt="wordcloud" style='display: "inline-block"'>
   </div>
   <div id='tweets-list'>
   <h2>من التغريدات</h2>

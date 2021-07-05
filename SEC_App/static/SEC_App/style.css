@@ -90,6 +90,10 @@ table {
 }
 
 h1 {
+    text-align: left;
+}
+
+#home-h1 {
     text-align: center;
 }
 
@@ -145,10 +149,13 @@ p {
 font-size: 1.5rem;
 }
   
-#home-button {
+#home-button, #home-button-div{
     height: 33px;
     width: 33px;
-    position: absolute;
-    margin-left: 5%;
-    margin-right: 70%;
+    margin-left: 2%;
+    margin-right: 38%;
+}
+
+#home-button-column {
+    padding-right: 800px;
 }

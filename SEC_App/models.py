@@ -7,7 +7,9 @@ class Request(models.Model):
     keyword = models.TextField()
     period_start = models.DateField(null=True)
     period_end = models.DateField(null=True)
-    time_start = models.TimeField(null=True)
+    true_start = models.TextField(null=True)
+    true_end = models.TextField(null=True)
+    time_start = models.TimeField(null=True) 
     time_end = models.TimeField(null=True)
     rangeOfsearch =  models.IntegerField(choices=[(0,'@ALKAHRABA OR @AlkahrabaCare OR كلمة البحث'),(1,'كلمة البحث فقط')])
     date_time = models.DateTimeField()
@@ -22,6 +24,8 @@ class Request(models.Model):
     1 : @Alkahrba or @AlkahrabaCare
     2 : option 1 & 2
     ----------
+    period-start, period_end: specified by the user
+    true_start, true_end: from the extracted tweets 
     """
     
 class Tweet(models.Model):

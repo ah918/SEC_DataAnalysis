@@ -24,6 +24,24 @@ from ar_wordcloud import ArabicWordCloud
     #object saving
 import joblib
 
+    #For arabert
+# from arabert.preprocess import ArabertPreprocessor
+# import numpy as np
+
+# from transformers import AutoConfig, AutoModelForSequenceClassification, AutoTokenizer, BertTokenizer
+# from transformers.data.processors import SingleSentenceClassificationProcessor
+# from transformers import Trainer , TrainingArguments
+# from transformers.trainer_utils import EvaluationStrategy
+# from transformers.data.processors.utils import InputFeatures
+# from torch.utils.data import Dataset
+# from torch.utils.data import DataLoader
+# from sklearn.utils import resample
+# import logging
+# import torch
+
+# DATA_COLUMN = "text"
+# model_name = 'aubmindlab/bert-base-arabertv02'
+# max_len = 280
 
 
 '''___________________________________ STEP1: Data Gathring ____________________________________ '''
@@ -158,7 +176,7 @@ def cleanTxt(text,Emoji_Dict,stopwords_set):
     text = re.sub(r"\b[a-zA-Z0–9]\b", "", text) #Removing single charcter word
     
     text = convert_emojis_to_word(text,Emoji_Dict)
-    text = tokenize(text)
+    text1 = tokenize(text)
 
     return [word for word in text if word not in stopwords_set and len(word)>3 ]
 
@@ -215,7 +233,82 @@ def word_cloud(dtm_df,path = None):
     if path:
         awc.to_file(path)
 
+'''___________________________________  Predict Sentiments  ____________________________________ '''
+# class Dataset:
+#     def __init__(
+#         self,
+#         name,
+#         test,
+#         label_list,
+#     ):
+#         self.name = name
+#         self.test = test
+#         self.label_list = label_list
+
+# class BERTDataset(Dataset):
+#     def __init__(self, text, model_name, max_len):
+#       super(BERTDataset).__init__()
+#       self.text = text
+#       self.tokenizer_name = model_name
+#       self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+#       self.max_len = max_len
+
+#     def __len__(self):
+#       return len(self.text)
+
+#     def __getitem__(self,item):
+#       text = str(self.text[item])
+#       text = " ".join(text.split())
+
+#       input_ids = self.tokenizer.encode(
+#           text,
+#           add_special_tokens=True,
+#           max_length=self.max_len,
+#           truncation='longest_first'
+#       )     
+    
+#       attention_mask = [1] * len(input_ids)
+
+#       # Zero-pad up to the sequence length.
+#       padding_length = self.max_len - len(input_ids)
+#       input_ids = input_ids + ([self.tokenizer.pad_token_id] * padding_length)
+#       attention_mask = attention_mask + ([0] * padding_length)
+
+#       return InputFeatures(input_ids=input_ids, attention_mask=attention_mask)
+
+# def create_dataset(tweets_text):
+#     tweets_text = tweets_text[["Text"]]  
+#     tweets_text.columns = [DATA_COLUMN]
+#     label_list_KAUST = ['NEG', 'NEUTRAL', 'POS']
+#     tweets = Dataset("tweets_text", tweets_text, label_list_KAUST)
+
+#     arabert_prep = ArabertPreprocessor(model_name.split("/")[-1])
+#     tweets.test[DATA_COLUMN] = tweets.test[DATA_COLUMN].apply(lambda x:   arabert_prep.preprocess(x))  
+#     tweets_dataset = BERTDataset(tweets.test[DATA_COLUMN].to_list(),model_name,max_len)
+     
+#     return tweets_dataset
+
+     
+# def load_arabert_model():
+#     PATH = '/Users/sarahalhabib/Downloads/kaust_arabert'
+#     model = AutoModelForSequenceClassification.from_pretrained(PATH, return_dict=True, num_labels=3)
+    
+#     trainer = Trainer(
+#         model = model,
+#     )
+
+#     return trainer
+
+# def predict_sentiments(tweets_text):
+#     #load model 
+#     model = load_arabert_model()
+#     predictions = model.predict(create_dataset(tweets_text))
+#     sentiments = np.argmax(predictions.predictions, axis=1)-1
+    
+#     return sentiments
+
 def predict_sentiments(tweets_df, dtm):
+    
     # save the model to disk
     filename = 'model1.sav'
     # some time later...

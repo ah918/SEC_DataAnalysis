@@ -6,7 +6,7 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     {% load static %}
-    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=19">
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=21">
     <script  type="module" src="{% static 'SEC_App/search.js' %}" defer></script>
 
     <!-- Tajawal font -->
@@ -23,12 +23,15 @@
 </head>
 <body>  
   <div id='pdf-container'>
-  <h1>النتائج والتحليلات</h1>
+  <h1>النتائج والتحليلات <div id="home-button-div" style="display: inline-block;">
+    <a href="{% url 'SEC_App:search' %}"><img id='home-button' src="{% static 'SEC_App/home-page.svg' %}" alt="الصفحة الرئيسية" style='display: "inline-block"'></a>
+  </div></h1>
   <div id='search-details'>
     <table>
       <tr>
         <th>كلمات البحث:</th>
         <td>{{req.keyword}}</td>
+        <td id="home-button-column"></td>
       </tr>
     </table>
     <table>
@@ -41,20 +44,17 @@
     </table>
     <form action="{% url 'SEC_App:history' %}" method="POST">
       {% csrf_token %}
-      <label for="query_num">رقم الطلب</label>
+      <label for="query_num">البحث رقم</label>
                 <select name="query_num" id="query_num" onchange="this.form.submit()">
-                    {% for req_num in requests_ids %}
-                      {% if req_num == req.id %}
-                        <option value={{req_num}} selected="selected">{{ req_num }}</option>
+                    {% for req_obj in req_list %}
+                      {% if req_obj.id == req.id %}
+                        <option value={{req_obj.id}} selected="selected" size=5>{{req_obj.id}}</option>
                       {% else %}
-                        <option value={{req_num}}>{{ req_num }}</option>
+                        <option value={{req_obj.id}}>{{req_obj.id}} تاريخ الطلب: {{req_obj.date_time}} كلمات البحث: "{{req_obj.keyword}}" من: {{req_obj.true_start}} إلى: {{req_obj.true_end}}</option>
                       {% endif %}
                     {% endfor %}
                 </select>
           </form>
-  </div>
-  <div id="home-button-div">
-    <a href="{% url 'SEC_App:search' %}"><img id='home-button' src="{% static 'SEC_App/home-page.svg' %}" alt="الصفحة الرئيسية" style='display: "inline-block"'></a>
   </div>
   <br><br>
   <div class="center-wrapper">
@@ -74,9 +74,9 @@
   <br><br><br>
   <div id="week-days-container" style='display: "inline-block"'>
     <canvas id="myChart2" width="30%" height="30%" style='display: "inline-block" !important;'></canvas>
+    <button id="2" type="button" >ساعات</button>
     <button id="0" type="button" >أيام</button>
     <button id="1" type="button" >أشهر</button>
-    <button id="2" type="button" >ساعات</button>
   </div>
   <div id="wordcloud-container">
     <span>سحابة الكلمات</span>
@@ -797,4 +797,4 @@ function imgToBase64(url, callback, imgVariable) {
 </body>
 </html>
 
-return sum(range(0,max(nums)))-sum(nums) if sum(range(0,max(nums)))-sum(nums) != 0 else max(nums)+1
+<!-- return sum(range(0,max(nums)))-sum(nums) if sum(range(0,max(nums)))-sum(nums) != 0 else max(nums)+1 -->

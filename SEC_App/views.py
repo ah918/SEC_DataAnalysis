@@ -22,7 +22,6 @@ def searchView(request):
     """
     home page / search page
     """
-
     if 'requests_ids' in request.session and request.session['requests_ids'] != None:
         return render(request,'SEC_App/search.html', {'query_num': request.session['requests_ids'][-1]})
     else: 
@@ -41,6 +40,7 @@ def analysis(request):
         request.session['requests_ids'] = request.session['requests_ids']+[req.id]
     else:
         request.session['requests_ids'] = [req.id]
+
     #Search for tweets
     tweets_df = search(req.keyword, limit=request.POST.get('limit',''), Since = req.period_start, Until = req.period_end)
     
@@ -53,26 +53,36 @@ def analysis(request):
                             nlike=tweets_df.iloc[i].nlikes, nretweet=tweets_df.iloc[i].nretweets, 
                             nreply=tweets_df.iloc[i].nreplies, username=tweets_df.iloc[i].username, 
                             name=tweets_df.iloc[i].name)
-    req.save()
+    
 
     # actual from and to dates
     from_date = tweets_df.iloc[tweets_df.shape[0]-1].date[:10]
     to_date = tweets_df.iloc[0].date[:10]
 
+    req.true_start = from_date
+    req.true_end = to_date
+    req.save()
+
+    #create requests list object
+    req_list = []
+    for req_id in request.session['requests_ids']:
+        req_list.append(Request.objects.get(id=req_id))
+
     #Clean dataframe
     tweets_df_cleaned = cleanDataframe(tweets_df)
     #Clean text
-    tweets_df_cleaned_text =  tweets_df_cleaned['tweet_text'].apply(lambda text : cleanTxt(text,Emoji_Dict(),stopwords_set()))
+    tweets_df_cleaned_text = tweets_df_cleaned['tweet_text'].apply(lambda text : cleanTxt(text,Emoji_Dict(),stopwords_set()))
     #Preprocessing text: create document term matrix 
     dtm = dtm_df(tweets_df_cleaned_text)
     #(create+show,save:optional) arabic word cloud 
-    word_cloud(dtm, path='SEC_App/static/SEC_App/wordcloud.png')
+    # word_cloud(dtm, path='SEC_App/static/SEC_App/wordcloud.png')
 
     # prepare tweet list to appear in result.html
     tweet_list = tweets_df_cleaned.head(50)['tweet_text'].to_list()
 
     #prepare the graphs data
     tweets_df_cleaned = predict_sentiments(tweets_df_cleaned, dtm)
+    # tweets_df_cleaned['sentiment'] = predict_sentiments([' '.join(list) for list in tweets_df_cleaned_text])
     reactions = get_reactions_dic(tweets_df_cleaned)
     period_data = get_period_dic(tweets_df_cleaned)
     sentiment_data = get_sentiment_dic(tweets_df_cleaned)
@@ -88,7 +98,7 @@ def analysis(request):
     return render(request, 'SEC_App/results.html',{'tweets_list': tweet_list, 'reactions': reactions, 'req': req, 
                                                     'from_date':from_date, 'to_date':to_date, 'period_data':period_data, 
                                                     'sentiment_data':sentiment_data, 'num_tweets':tweets_df_cleaned.shape[0], 
-                                                    'requests_ids':request.session['requests_ids']})
+                                                    'req_list':req_list})
 
 def history(request):
     """
@@ -101,17 +111,22 @@ def history(request):
         req = Request.objects.get(id=request.GET.get('query_num'))
     
     analysis = Analysis.objects.get(request=req)
-    
+
     #to decode analysis data
     jsonDec = decoder.JSONDecoder()
     
     #(create+show,save:optional) arabic word cloud 
     word_cloud(pd.read_json(analysis.dtm), path='SEC_App/static/SEC_App/wordcloud.png')
 
+    #create requests list object
+    req_list = []
+    for req_id in request.session['requests_ids']:
+        req_list.append(Request.objects.get(id=req_id))
+
     return render(request, 'SEC_App/results.html',{'tweets_list': jsonDec.decode(analysis.tweets_list), 'reactions': analysis.reactions, 'req': req, 
                                                     'from_date':analysis.from_date, 'to_date':analysis.to_date, 'period_data':analysis.period_data, 
                                                     'sentiment_data':analysis.sentiment_data, 'num_tweets':analysis.num_tweets, 
-                                                    'requests_ids':request.session['requests_ids']})
+                                                    'req_list':req_list})
 
 def get_reactions_dic(tweets_df):
     # raection bar chart data set

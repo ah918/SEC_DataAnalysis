@@ -61,14 +61,6 @@ label {
     color: aliceblue;
 }
 
-.hide {
-    visibility: hidden;
-}
-
-.show {
-    visibility: visible;
-}
-
 td, th{
     border-bottom: 2px solid #f0f8ff;
     padding: 5px;

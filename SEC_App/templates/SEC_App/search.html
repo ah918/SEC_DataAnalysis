@@ -6,8 +6,8 @@
     <title>تحليل بيانات شركة الكهرباء</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     {% load static %}
-    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=6">
-    <script src="{% static 'SEC_App/search.js' %}" defer></script>
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=8">
+    <script src="{% static 'SEC_App/search.js' %}?version=9" defer></script>
 
     <!-- jQuery Datepicker -->
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -44,13 +44,13 @@
             <form action="{% url 'SEC_App:analysis' %}"  method="post" onSubmit="loadingPage()">
                 {% csrf_token %}
                 <label for='keyword'>كلمات البحث</label>
-                <input list="keywords" id="keyword" name="keyword" onKeypress="keywords()" placeholder="مثال: كهرباء فاتورة انقطاع ..." size="37"/>
+                <input list="keywords" id="keyword" name="keyword" onkeydown="keywords()" placeholder="مثال: كهرباء فاتورة انقطاع ..." size="37"/>
                 <datalist id='keywords'>
                     <option value="كهرباء">
                     <option value="كهرب">
                     <option value="ألواح شمسية">
                 </datalist>
-                <select name="or_and" id="or_and" class="hide">
+                <select name="or_and" id="or_and" style="display: none;">
                     <option value=0>أو</option>
                     <option value=1>و</option>
                 </select><br><br>
@@ -58,7 +58,7 @@
                 <label for="domain">نطــاق البحث</label>
                 <select name="domain" id="domain">
                     <option value=0 dir="ltr" size="46">وكلمة البحث (@ALKAHRABA أو @AlkahrabaCare)</option>
-                    <option value=1 class="hide" id="keyword_option" size="46">كلمة البحث فقط</option>
+                    <option value=1 id="keyword_option" size="46" style="display: none;">كلمة البحث فقط</option>
                 </select><br><br>
                 <button type="submit">حلل</button>
         </fieldset>

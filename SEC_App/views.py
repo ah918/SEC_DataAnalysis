@@ -22,6 +22,7 @@ def searchView(request):
     """
     home page / search page
     """
+    
     if 'requests_ids' in request.session and request.session['requests_ids'] != None:
         return render(request,'SEC_App/search.html', {'query_num': request.session['requests_ids'][-1]})
     else: 
@@ -35,21 +36,22 @@ def analysis(request):
     #create request model opject
     req = create_request(request)
     
-    #add request object id to session cookie
-    if 'requests_ids' in request.session and request.session['requests_ids'] != None:  
-        request.session['requests_ids'] = request.session['requests_ids']+[req.id]
-    else:
-        request.session['requests_ids'] = [req.id]
-
     #Search for tweets
     try:
         tweets_df = search(req.keyword, limit=request.POST.get('limit',''), Since = req.period_start, Until = req.period_end)
     except:
         return render(request, 'SEC_App/error.html')
 
-    #Save request opject
+    #save request object
     req.save()
     
+    #add request object id to session cookie
+    if 'requests_ids' in request.session and request.session['requests_ids'] != None:  
+        request.session['requests_ids'] = request.session['requests_ids']+[req.id]
+    else:
+        request.session['requests_ids'] = [req.id]
+
+
     # create and save tweets model objects
     print(tweets_df.shape[0])
     for i, tweet in enumerate(tweets_df):

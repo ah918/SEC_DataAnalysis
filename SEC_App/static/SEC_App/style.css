@@ -215,7 +215,7 @@ font-size: 1.5rem;
   }
   
   /* Style the tab content */
-.tabcontent {
+.tabcontent, .tweets-tabcontent {
     display: none;
     padding: 6px 12px;
     border: 0px solid #f0f8ff;

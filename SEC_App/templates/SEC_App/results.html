@@ -61,7 +61,7 @@
   <!-- Tab links -->
 <div class="tab">
   <button class="tablinks" onClick="openPage(event, 'analysis-container')" id="defaultOpen">التحليلات</button>
-  <button class="tablinks" onClick="openPage(event, 'tweets-list')">التغريدات</button>
+  <button class="tablinks" onClick="openPage(event, 'tweets-list');">التغريدات</button>
 </div>
 
 <br><br>
@@ -95,19 +95,67 @@
 </div>
 
   <div id='tweets-list' class="tabcontent">
+     <!-- Tab links -->
+    <div class="tab" style="width: 100%;">
+      <button class="tweets-tablinks" onClick="openTweets(event, 'all-tweets')" id="defaultOpenTweets">جميع التغريدات</button>
+      <button class="tweets-tablinks" onClick="openTweets(event, 'positive-tweets')">التغريدات الإيجابية</button>
+      <button class="tweets-tablinks" onClick="openTweets(event, 'negative-tweets')">التغريدات السلبية</button>
+      <button class="tweets-tablinks" onClick="openTweets(event, 'neutral-tweets')">التغريدات الطبيعية</button>
+    </div>
+    <div id="all-tweets" class="tweets-tabcontent">
+      <h2>جميع التغريدات</h2>
+      <table>
+      {% for tweet in tweets_dic.all_tweets %}
+          <tr>
+            <td class="counter">{{ forloop.counter }}</td>
+            <td>{{ tweet }}</td>
+          </tr>
+      {% endfor %}
+      </table>
+    </div>
 
-  <h2>من التغريدات</h2>
-    <table>
-    {% for tweet in tweets_list %}
-        <tr>
-          <td class="counter">{{ forloop.counter }}</td>
-          <td>{{ tweet }}</td>
-        </tr>
-    {% endfor %}
-    </table>
+    <div id="positive-tweets" class="tweets-tabcontent">
+      <h2> التغريدات الإيجابية</h2>
+      <table>
+      {% for tweet in tweets_dic.positive_tweets %}
+          <tr>
+            <td class="counter">{{ forloop.counter }}</td>
+            <td>{{ tweet }}</td>
+          </tr>
+      {% endfor %}
+      </table>
+    </div>
+
+    <div id="negative-tweets" class="tweets-tabcontent">
+      <h2>التغريدات السلبية</h2>
+      <table>
+      {% for tweet in tweets_dic.negative_tweets %}
+          <tr>
+            <td class="counter">{{ forloop.counter }}</td>
+            <td>{{ tweet }}</td>
+          </tr>
+      {% endfor %}
+      </table>
+    </div>
+
+    <div id="neutral-tweets" class="tweets-tabcontent">
+      <h2>التغريدات الطبيعية</h2>
+      <table>
+      {% for tweet in tweets_dic.neutral_tweets %}
+          <tr>
+            <td class="counter">{{ forloop.counter }}</td>
+            <td>{{ tweet }}</td>
+          </tr>
+      {% endfor %}
+      </table>
+    </div>
   </div>
 
-<script>document.getElementById("defaultOpen").click();</script>
+<script>
+  document.getElementById("defaultOpen").click();
+  document.getElementById("defaultOpenTweets").click();
+</script>
+
 <script>
   var reactions = JSON.parse("{{ reactions|escapejs }}");
 

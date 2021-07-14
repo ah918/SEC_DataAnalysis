@@ -101,25 +101,20 @@ def analysis(request):
     #(create+show,save:optional) arabic word cloud 
     word_cloud(dtm, path='SEC_App/static/SEC_App/wordcloud.png')
 
-    # prepare tweet list to appear in result.html
-    tweet_list = tweets_df_cleaned.head(50)['tweet_text'].to_list()
-
     #prepare the graphs data
     tweets_df_cleaned = predict_sentiments(tweets_df_cleaned, dtm)
     # tweets_df_cleaned['sentiment'] = predict_sentiments([' '.join(list) for list in tweets_df_cleaned_text])
     reactions = get_reactions_dic(tweets_df_cleaned)
     period_data = get_period_dic(tweets_df_cleaned)
     sentiment_data = get_sentiment_dic(tweets_df_cleaned)
-
-    
-    print('limit:', request.POST.get('limit',''))
+    tweets_dic = get_tweets_dic(tweets_df_cleaned)
 
     #create analysis object
-    req.analysis_set.create(request=req, tweets_list=dumps(tweet_list), dtm=dtm.to_json(), reactions=reactions, from_date=from_date, 
+    req.analysis_set.create(request=req, tweets_list=dumps(tweets_dic), dtm=dtm.to_json(), reactions=reactions, from_date=from_date, 
                             to_date=to_date, period_data=period_data, sentiment_data=sentiment_data, 
                             num_tweets=tweets_df_cleaned.shape[0])
 
-    return render(request, 'SEC_App/results.html',{'tweets_list': tweet_list, 'reactions': reactions, 'req': req, 
+    return render(request, 'SEC_App/results.html',{'tweets_dic': tweets_dic, 'reactions': reactions, 'req': req, 
                                                     'from_date':from_date, 'to_date':to_date, 'period_data':period_data, 
                                                     'sentiment_data':sentiment_data, 'num_tweets':tweets_df_cleaned.shape[0], 
                                                     'req_list':req_list})
@@ -149,7 +144,7 @@ def history(request):
     except:
         req_list = None
 
-    return render(request, 'SEC_App/results.html',{'tweets_list': jsonDec.decode(analysis.tweets_list), 'reactions': analysis.reactions, 'req': req, 
+    return render(request, 'SEC_App/results.html',{'tweets_dic': jsonDec.decode(analysis.tweets_list), 'reactions': analysis.reactions, 'req': req, 
                                                     'from_date':analysis.from_date, 'to_date':analysis.to_date, 'period_data':analysis.period_data, 
                                                     'sentiment_data':analysis.sentiment_data, 'num_tweets':analysis.num_tweets, 
                                                     'req_list':req_list})
@@ -346,3 +341,17 @@ def create_request(request):
 
     return req
 
+def get_tweets_dic(tweets_df_cleaned):
+    tweet_list = tweets_df_cleaned['tweet_text'].to_list()
+    neutral_tweets = tweets_df_cleaned.tweet_text[tweets_df_cleaned['sentiment']==0].to_list()
+    positive_tweets = tweets_df_cleaned.tweet_text[tweets_df_cleaned['sentiment']==1].to_list()
+    negative_tweets = tweets_df_cleaned.tweet_text[tweets_df_cleaned['sentiment']==-1].to_list()
+
+    tweets_dic = {
+        'all_tweets': tweet_list,
+        'neutral_tweets': neutral_tweets,
+        'positive_tweets': positive_tweets,
+        'negative_tweets': negative_tweets
+    }
+
+    return tweets_dic

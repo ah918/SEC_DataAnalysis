@@ -7,7 +7,7 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     {% load static %}
     <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=21">
-    <script  type="module" src="{% static 'SEC_App/search.js' %}" defer></script>
+    <script src="{% static 'SEC_App/search.js' %}?version=1"></script>
 
     <!-- Tajawal font -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -21,16 +21,17 @@
     
     <title>النتائج والتحليلات</title>
 </head>
-<body>  
-  <div id='pdf-container'>
-  <h1>النتائج والتحليلات <div id="home-button-div" style="display: inline-block;">
+<body> 
+  <h1><a href="{% url 'logout'%}?next={% url 'SEC_App:search' %}"><button class="light-button" style="text-align: right; margin-left: 33%; ">تسجيل الخروج</button></a>
+    النتائج والتحليلات <div id="home-button-div" style="display: inline-block;">
     <a href="{% url 'SEC_App:search' %}"><img id='home-button' src="{% static 'SEC_App/home-page.svg' %}" alt="الصفحة الرئيسية" style='display: "inline-block"'></a>
-  </div></h1>
+  </div>
+</h1>
   <div id='search-details'>
     <table>
       <tr>
         <th>كلمات البحث:</th>
-        <td>{{req.keyword}}</td>
+        <td>{{req.presentationkeyword}}</td>
         <td id="home-button-column"></td>
       </tr>
     </table>
@@ -50,13 +51,21 @@
                       {% if req_obj.id == req.id %}
                         <option value={{req_obj.id}} selected="selected" size=5>{{req_obj.id}}</option>
                       {% else %}
-                        <option value={{req_obj.id}}>{{req_obj.id}} تاريخ الطلب: {{req_obj.date_time}} كلمات البحث: "{{req_obj.keyword}}" من: {{req_obj.true_start}} إلى: {{req_obj.true_end}}</option>
+                        <option value={{req_obj.id}}>{{req_obj.id}} كلمات البحث: "{{req_obj.presentationkeyword}}" من: {{req_obj.true_start}} إلى: {{req_obj.true_end}}</option>
                       {% endif %}
                     {% endfor %}
                 </select>
           </form>
   </div>
-  <br><br>
+
+  <!-- Tab links -->
+<div class="tab">
+  <button class="tablinks" onClick="openPage(event, 'analysis-container')" id="defaultOpen">التحليلات</button>
+  <button class="tablinks" onClick="openPage(event, 'tweets-list')">التغريدات</button>
+</div>
+
+<br><br>
+<div id='analysis-container' class="tabcontent">
   <div class="center-wrapper">
   <div id="pie-chart-container" class="relative">
     <!-- <span>تحليل المشاعر</span> -->
@@ -83,7 +92,10 @@
     <br><br>
     <img src="{% static 'SEC_App/wordcloud.png' %}?version={{req.id}}" alt="wordcloud" style='display: "inline-block"'>
   </div>
-  <div id='tweets-list'>
+</div>
+
+  <div id='tweets-list' class="tabcontent">
+
   <h2>من التغريدات</h2>
     <table>
     {% for tweet in tweets_list %}
@@ -95,7 +107,7 @@
     </table>
   </div>
 
-
+<script>document.getElementById("defaultOpen").click();</script>
 <script>
   var reactions = JSON.parse("{{ reactions|escapejs }}");
 
@@ -704,8 +716,7 @@ function Hours_period(){
 var chart = new Chart(pie_ctx, config_pie, actions_pie)
 
 </script>
-</div>
-<button id="btnPrint" onClick="generate()"> اطبع </h4>
+<!-- <button id="btnPrint" onClick="generate()"> اطبع </h4> -->
 <script>
   function generate()
 {

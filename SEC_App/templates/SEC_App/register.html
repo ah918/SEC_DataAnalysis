@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل مستخدم جديد</title>
+
+    {% load static %}
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=3">
+
+    <!-- Tajawal font -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1 style="text-align: center;">تسجيل مستخدم جديد</h1>
+    <fieldset class="input_box" id="register-div">
+        {% if form.errors %}
+            {{form.errors}}
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %} 
+            <!-- {{form.as_p}} -->
+            <table class="login-content">
+                <tr>
+                    <td>الاسم الأول</td>
+                    <td><span id='first_name'>{{form.first_name}}</span></td>
+                </tr>
+                <tr>
+                    <td>الاسم الأخير</td>
+                    <td><span id='last_name'>{{form.last_name}}</span></td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <td>اسم المستخدم</td>
+                    <td><span id='username'>{{form.username}}</span></td>
+                </tr>
+                <tr>
+                    <td>البريد الالكتروني</td>
+                    <td><span id='email'>{{form.email}}</span></td>
+                </tr>
+                <tr>
+                    <td>كلمة المرور</td>
+                    <td><span id='password1'>{{form.password1}}</span></td>
+                </tr>
+                <tr>
+                    <td>كلمة المرور</td>
+                    <td><span id='password2'>{{form.password2}}</span></td>
+                </tr>
+            </table>
+            <br><br>
+            <button type="submit" value ="Register">إنشاء حساب جديد</button>
+        </form> 
+    </fieldset>   
+</body>
+</html>

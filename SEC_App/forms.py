@@ -1,9 +1,12 @@
-from django.db.models import fields
-from SEC_App.models import Request
 from django import forms
-from datetime import date
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 
-class RequestForm(forms.ModelForm):
+class UserForm(UserCreationForm):
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+    email = forms.EmailField()
+
     class Meta:
-        model = Request
-        fields = ['keyword', 'period_start', 'period_end', 'time_start', 'time_end', 'rangeOfsearch', 'includeAll']
+        model = User
+        fields = ('first_name','last_name', 'username', 'email', 'password1' ,'password2')

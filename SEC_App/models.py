@@ -1,10 +1,14 @@
 from django.db import models
 from django.db.models.deletion import CASCADE
 from django.db.models.fields.json import JSONField
+from django.conf import settings
+import re
 
 # Create your models here.
 class Request(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE)
     keyword = models.TextField()
+    presentationkeyword = models.TextField(null=True, default=None)
     period_start = models.DateField(null=True)
     period_end = models.DateField(null=True)
     true_start = models.TextField(null=True)
@@ -44,13 +48,6 @@ class Tweet(models.Model):
    
 
 class Analysis(models.Model):
-    """
-    {'tweets_list': tweet_list, 'reactions': reactions, 'req': req, 
-    'from_date':from_date, 'to_date':to_date, 'period_data':period_data, 
-    'sentiment_data':sentiment_data, 'num_tweets':tweets_df.shape[0], 
-    'requests_ids':request.session['requests_ids']}
-    """
-
     request = models.ForeignKey(Request, on_delete=CASCADE)
     tweets_list = models.JSONField()
     dtm = models.JSONField()

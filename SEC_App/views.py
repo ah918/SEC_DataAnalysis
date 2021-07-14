@@ -1,8 +1,8 @@
 from ast import dump
 from re import T
 from django.http.response import HttpResponseRedirect
-from SEC_App.forms import RequestForm
-from django.shortcuts import render
+from SEC_App.forms import UserForm
+from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from .models import Analysis, Request, Tweet
 from django.utils import timezone
@@ -10,24 +10,45 @@ import pandas as pd
 import datetime
 import random
 from json import dumps, decoder, loads
-
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 import twint
 import nest_asyncio
 nest_asyncio.apply()
 from .wordCloud import *
 
-# Create your views here.
+def register(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+        else:
+            return render(request, 'SEC_App/register.html', {'form': form}) 
+    else:
+        form = UserForm()
+        return render(request, 'SEC_App/register.html', {'form': form})
 
+@login_required
 def searchView(request):
     """
     home page / search page
     """
     
-    if 'requests_ids' in request.session and request.session['requests_ids'] != None:
-        return render(request,'SEC_App/search.html', {'query_num': request.session['requests_ids'][-1]})
+    # if 'requests_ids' in request.session and request.session['requests_ids'] != None:
+    #     return render(request,'SEC_App/search.html', {'query_num': request.session['requests_ids'][-1]})
+    # else: 
+    #     return render(request,'SEC_App/search.html', {'query_num': None})
+    try:
+        req_list = list(Request.objects.filter(user=request.user))
+    except:
+        req_list = None
+    if  req_list != None and len(req_list)>=1:
+        return render(request,'SEC_App/search.html', {'query_num': req_list[-1].id})
     else: 
         return render(request,'SEC_App/search.html', {'query_num': None})
 
+@login_required
 def analysis(request):
     """
     results and analysis page
@@ -45,13 +66,6 @@ def analysis(request):
     #save request object
     req.save()
     
-    #add request object id to session cookie
-    if 'requests_ids' in request.session and request.session['requests_ids'] != None:  
-        request.session['requests_ids'] = request.session['requests_ids']+[req.id]
-    else:
-        request.session['requests_ids'] = [req.id]
-
-
     # create and save tweets model objects
     print(tweets_df.shape[0])
     for i, tweet in enumerate(tweets_df):
@@ -69,12 +83,14 @@ def analysis(request):
 
     req.true_start = from_date
     req.true_end = to_date
+    req.presentationkeyword = re.sub('OR','أو',re.sub('AND','و',req.keyword))
     req.save()
 
     #create requests list object
-    req_list = []
-    for req_id in request.session['requests_ids']:
-        req_list.append(Request.objects.get(id=req_id))
+    try:
+        req_list = list(Request.objects.filter(user=request.user))
+    except:
+        req_list = None
 
     #Clean dataframe
     tweets_df_cleaned = cleanDataframe(tweets_df)
@@ -108,6 +124,7 @@ def analysis(request):
                                                     'sentiment_data':sentiment_data, 'num_tweets':tweets_df_cleaned.shape[0], 
                                                     'req_list':req_list})
 
+@login_required
 def history(request):
     """
     previous searches/requests page
@@ -127,9 +144,10 @@ def history(request):
     word_cloud(pd.read_json(analysis.dtm), path='SEC_App/static/SEC_App/wordcloud.png')
 
     #create requests list object
-    req_list = []
-    for req_id in request.session['requests_ids']:
-        req_list.append(Request.objects.get(id=req_id))
+    try:
+        req_list = list(Request.objects.filter(user=request.user))
+    except:
+        req_list = None
 
     return render(request, 'SEC_App/results.html',{'tweets_list': jsonDec.decode(analysis.tweets_list), 'reactions': analysis.reactions, 'req': req, 
                                                     'from_date':analysis.from_date, 'to_date':analysis.to_date, 'period_data':analysis.period_data, 
@@ -317,7 +335,6 @@ def create_request(request):
         if (period_start != None and period_end_date  < period_start_date) or period_end_date > timezone.now().date():
             period_end = str(timezone.now().date())
             
-    
     print(period_start)
     print(period_end)
     print(rangeOfsearch)
@@ -325,7 +342,7 @@ def create_request(request):
     print(includeAll)
 
     #creat request opject
-    req = Request(keyword=keyword, period_start=period_start, period_end=period_end, time_start=time_start, time_end=time_end, rangeOfsearch=rangeOfsearch, date_time=date_time, includeAll=includeAll)
+    req = Request(user=request.user, keyword=keyword, period_start=period_start, period_end=period_end, time_start=time_start, time_end=time_end, rangeOfsearch=rangeOfsearch, date_time=date_time, includeAll=includeAll)
 
     return req
 

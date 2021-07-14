@@ -34,10 +34,22 @@
 </div>
 <div id='loading-wrapper-h3'>جمع وتحليل التغريدات</div>
 <body>
-    
-
     <div id='full-page'>
-    <h1 id='home-h1'>تحليل بيانات شركة الكهرباء</h1>
+    <h1 id='home-h1'>تحليل تغريدات شركة الكهرباء</h1>
+    <div id='user-div' style="text-align: right;">
+        <img src="{% static 'SEC_App/user.svg' %}?version=1" style="width: 50px;" alt={{ user.get_username }}>
+        <span style="font-size: large;">{{ user.get_username }}</span>
+        <br><br>
+        {% if query_num != None %}
+            <a href="{% url 'SEC_App:history' %}?query_num={{ query_num }}"><button class="light-button" style="background-color: aliceblue; color: #16162c;">عمليات البحث السابقة</button></a><br><br>
+        {% endif %}
+        <a href="{% url 'logout'%}?next={{request.path}}"><button class="light-button">تسجيل الخروج</button></a><br>
+    </div>
+    <!-- <h1>النتائج والتحليلات</h1><div id="home-button-div" style="display: inline-block;">
+        <a href="{% url 'logout'%}?next={{request.path}}">تسجيل الخروج</a>
+        <img id='home-button' src="{% static 'SEC_App/user.svg' %}" alt="{{ user.get_username }}" style='display: "inline-block"'>
+        <span>{{ user.get_username }}</span>
+    </div></h1> -->
     <div id="input-box-wrapper">
         <fieldset class='input_box'>
             <legend><h2>أساسي</h2></legend>
@@ -83,9 +95,6 @@
             </fieldset>
             </div>
         </form>
-        {% if query_num != None %}
-            <a href="{% url 'SEC_App:history' %}?query_num={{ query_num }}"><button>عمليات البحث السابقة</button></a>
-        {% endif %}
     </div>
     
 </body>

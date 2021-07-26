@@ -1,5 +1,5 @@
 .input_box {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.1);
     border-radius: 20px;
     border: 0px;
     display: inline-block;
@@ -32,7 +32,7 @@
 }
 
 body, html {
-    background-color: #16162c;
+    background-color: #121212;
     color: aliceblue;
     font-family: 'Tajawal', sans-serif;
     margin: 10px;
@@ -45,8 +45,8 @@ input, select, button {
 }
 
 button {
-    background-color:#4CAF50 ;
-    color: rgb(240, 248, 255);
+    background-color:#80DEEA;
+    color: #121212;
     padding-left: 15px;
     padding-right: 15px;
     padding-top: 6px;
@@ -58,7 +58,7 @@ button {
 }
 
 .light-button {
-    background-color:rgba(240, 248, 255, 0) ;
+    background-color:inherit;
     color: rgb(240, 248, 255);
     padding-left: 5px;
     padding-right: 5px;
@@ -87,12 +87,16 @@ table {
 
 #search-details {
     display: block;
-    border-top: 2px solid #f0f8ff;
-    border-bottom: 2px solid #f0f8ff;
+    /* border-top: 2px solid #f0f8ff;
+    border-bottom: 2px solid #f0f8ff; */
+    padding-bottom: 20px;
 }
 
 h1 {
     text-align: left;
+    background-color: rgba(255, 255, 255, 0.1); 
+    border-radius: 7px;
+    padding: 10px; 
 }
 
 #home-h1 {
@@ -101,7 +105,7 @@ h1 {
 
 #loading-wrapper{
     display: none;
-    background-color: rgb(21, 21, 43);
+    background-color: #121212;
     width: 100%;
     right: 49%;
     transform: translateX(-49%);
@@ -115,7 +119,7 @@ h1 {
     margin-top: 5%;
 } 
 
-#myCahrt-container, #wordcloud-container, #pie-chart-container, #week-days-container{
+.chart-container{ /* #myCahrt-container, #wordcloud-container, #pie-chart-container, #week-days-container{ */
     width:500px !important;
     height:500px !important;
     position: relative;
@@ -125,7 +129,17 @@ h1 {
     font-weight: 600;
     margin: 20px;
     text-align: center;
-    margin: 70px;
+    margin: 60px;
+    background-color: rgba(255, 255, 255, 0.1); 
+    padding: 50px;
+    padding-bottom: 80px;
+    border-radius: 20px;
+    text-align: right;
+}
+
+.chart-title{
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: right;
 }
 
 #tweet-list {
@@ -186,32 +200,34 @@ font-size: 1.5rem;
 /* Style the tab */
 .tab {
     overflow: hidden;
-    border: 1px solid #f0f8ff;
-    background-color: rgb(21, 21, 43);
+    background-color: rgba(255, 255, 255, 0.1); 
     display: flex;
     justify-content: flex-end;
+    border-radius: 7px;
   }
   
   /* Style the buttons that are used to open the tab content */
   .tab button {
-    background-color: inherit;
+    background-color: rgba(255, 255, 255, 0.0); ;
     float: left;
     border: none;
     outline: none;
     cursor: pointer;
     padding: 14px 16px;
     transition: 0.3s;
+    color: #f0f8ff;
   }
   
+
   /* Change background color of buttons on hover */
   .tab button:hover {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(128, 222, 234, 1);
   }
   
   /* Create an active/current tablink class */
   .tab button.active {
-    background-color: rgba(255, 255, 255, 0.8);
-    color: rgb(21, 21, 43);
+    background-color: rgba(128, 222, 234, 1);
+    color: #121212;
   }
   
   /* Style the tab content */
@@ -219,5 +235,16 @@ font-size: 1.5rem;
     display: none;
     padding: 6px 12px;
     border: 0px solid #f0f8ff;
-    border-top: none;
   }
+
+/* ******************************************** */
+
+/* Change background color of buttons on hover */
+#week-days-container button:hover {
+background-color: rgba(128, 222, 234, 0.8);
+}
+
+/* Create an active/current tablink class */
+#week-days-container button.active {
+background-color: rgba(128, 222, 234, 0.8);
+}

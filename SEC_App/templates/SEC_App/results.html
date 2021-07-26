@@ -6,7 +6,7 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     {% load static %}
-    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=21">
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=22">
     <script src="{% static 'SEC_App/search.js' %}?version=1"></script>
 
     <!-- Tajawal font -->
@@ -67,28 +67,33 @@
 <br><br>
 <div id='analysis-container' class="tabcontent">
   <div class="center-wrapper">
-  <div id="pie-chart-container" class="relative">
-    <!-- <span>تحليل المشاعر</span> -->
+  <div id="pie-chart-container" class="chart-container" class="relative">
+    <div class="chart-title">تحليل المشاعر</div>
     <canvas id="sentiment-pie-chart"></canvas>
     <div class="absolute-center text-center">
       <p>عدد التغريدات:</p>
       <p>{{num_tweets}}</p>
     </div>
   </div>
-  <div id="myCahrt-container">
-    <span>التفاعل مع التغريدات</span>
+  <div id="myCahrt-container" class="chart-container">
+    <div class="chart-title">التفاعل مع التغريدات</div>
     <canvas id="reactions-bar-chart" width="30%" height="30%" style='display: "inline-block" !important;'></canvas>
   </div>
  </div>
   <br><br><br>
-  <div id="week-days-container" style='display: "inline-block"'>
+  <div id="week-days-container" class="chart-container" style='display: "inline-block"'>
+    <div class="chart-title">الخط الزمني</div>
     <canvas id="myChart2" width="30%" height="30%" style='display: "inline-block" !important;'></canvas>
-    <button id="2" type="button" >ساعات</button>
-    <button id="0" type="button" >أيام</button>
-    <button id="1" type="button" >أشهر</button>
+    <button id="2" type="button" class="period-button">ساعات</button>
+    <button id="0" type="button" class="period-button">أيام</button>
+    <button id="1" type="button" class="period-button">أشهر</button>
   </div>
-  <div id="wordcloud-container">
-    <span>سحابة الكلمات</span>
+  <div id="classes-container" class="chart-container">
+    <div class="chart-title">تصنيف التغريدات</div>
+    <canvas id="classes-chart" width="30%" height="30%" style='display: "inline-block" !important;'></canvas>
+  </div>
+  <div id="wordcloud-container" class="chart-container" style="text-align: center;">
+    <div class="chart-title">سحابة الكلمات</div>
     <br><br>
     <img src="{% static 'SEC_App/wordcloud.png' %}?version={{req.id}}" alt="wordcloud" style='display: "inline-block"'>
   </div>
@@ -176,24 +181,24 @@
       {
         label: 'إعجابات',
         data: likes,
-        backgroundColor: 'rgba(255, 99, 132, 1)',
-        borderColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: '#b794f6',
+        borderColor: '#b794f6',
         borderWidth: 1,
         hoverOffset: 4
       },
       {
         label: 'إعادات التغريد',
         data: retweets,
-        backgroundColor: 'rgba(54, 162, 235, 1)',
-        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: '#c6f68d',
+        borderColor: '#c6f68d',
         borderWidth: 1,
         hoverOffset: 4
       },
       {
         label: 'الردود',
         data: replies,
-        backgroundColor: 'rgba(255, 206, 86, 1)', 
-        borderColor: 'rgba(255, 206, 86, 1)',
+        backgroundColor: '#80DEEA', 
+        borderColor: '#80DEEA',
         borderWidth: 1,
         hoverOffset: 4
       },
@@ -287,7 +292,7 @@
 
   var chart3 , chart2;
   function Days_period(){
-
+  
   // setup
   const DATA_COUNT2 = 7;
   const NUMBER_CFG = {count: DATA_COUNT2, min: -100, max: 100};
@@ -300,22 +305,22 @@
       {
         label: 'ايجابي',
         data: positiveData,
-        borderColor: 'rgba(255, 206, 86, 1)',
-        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+        borderColor: '#80DEEA',
+        backgroundColor: '#80DEEA',
         yAxisID: 'y',
       },
       {
         label: 'سلبي',
         data: negativeData,
-        borderColor: 'rgba(255, 99, 132, 1)',
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: '#b794f6',
+        backgroundColor: '#b794f6',
         yAxisID: 'y',
       },
       {
         label: 'طبيعي',
         data: neutralData,
-        borderColor: 'rgba(54, 162, 235, 1)',
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: '#c6f68d',
+        backgroundColor: '#c6f68d',
         yAxisID: 'y',
       }
     ]
@@ -397,13 +402,40 @@
   var chart2 = new Chart(ctx2, config2, actions2)
 
   document.getElementById("1").addEventListener('click', () => {
-  chart2.destroy();
-  Month_period();
+    // get all period container buttons
+    period_buttons = document.getElementsByClassName("period-button");
+      for (i = 0; i < period_buttons.length; i++) {
+        period_buttons[i].className = period_buttons[i].className.replace(" active", "");
+      }
+
+    // activate clicked button
+    event.currentTarget.className += " active";
+    chart2.destroy();
+    Month_period();
 });
 document.getElementById("2").addEventListener('click', () => {
+  // get all period container buttons
+  period_buttons = document.getElementsByClassName("period-button");
+    for (i = 0; i < period_buttons.length; i++) {
+      period_buttons[i].className = period_buttons[i].className.replace(" active", "");
+    }
+
+  // activate clicked button
+  event.currentTarget.className += " active";
   chart2.destroy();
   Hours_period();
 });
+document.getElementById("0").addEventListener('click', () => {
+    // get all period container buttons
+    period_buttons = document.getElementsByClassName("period-button");
+      for (i = 0; i < period_buttons.length; i++) {
+        period_buttons[i].className = period_buttons[i].className.replace(" active", "");
+      }
+
+    // activate clicked button
+    event.currentTarget.className += " active";
+});
+document.getElementById("0").click();
   }
 
   function Month_period(){
@@ -419,22 +451,22 @@ document.getElementById("2").addEventListener('click', () => {
       {
         label: 'ايجابي',
         data: postiveD,
-        borderColor: 'rgba(255, 206, 86, 1)',
-        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+        borderColor: '#80DEEA',
+        backgroundColor: '#80DEEA',
         yAxisID: 'y',
       },
       {
         label: 'سلبي',
         data: NegativeD,
-        borderColor: 'rgba(255, 99, 132, 1)',
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: '#b794f6',
+        backgroundColor: '#b794f6',
         yAxisID: 'y',
       },
       {
         label: 'طبيعي',
         data: NatD,
-        borderColor: 'rgba(54, 162, 235, 1)',
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: '#c6f68d',
+        backgroundColor: '#c6f68d',
         yAxisID: 'y',
       }
     ]
@@ -516,10 +548,30 @@ document.getElementById("2").addEventListener('click', () => {
   chart3 = new Chart(ctx2, config3, actions3)
   // add event listeners for the buttons
 document.getElementById("0").addEventListener('click', () => {
+  
+  // get all period container buttons
+  period_buttons = document.getElementsByClassName("period-button");
+    for (i = 0; i < period_buttons.length; i++) {
+      period_buttons[i].className = period_buttons[i].className.replace(" active", "");
+    }
+
+  // activate clicked button
+  event.currentTarget.className += " active";
+
   chart3.destroy();
   Days_period();
 });
 document.getElementById("2").addEventListener('click', () => {
+  
+  // get all period container buttons
+  period_buttons = document.getElementsByClassName("period-button");
+    for (i = 0; i < period_buttons.length; i++) {
+      period_buttons[i].className = period_buttons[i].className.replace(" active", "");
+    }
+
+  // activate clicked button
+  event.currentTarget.className += " active";
+
   chart3.destroy();
   Hours_period()
 });
@@ -540,22 +592,22 @@ function Hours_period(){
       {
         label: 'ايجابي',
         data: postiveH,
-        borderColor: 'rgba(255, 206, 86, 1)',
-        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+        borderColor: '#80DEEA',
+        backgroundColor: '#80DEEA',
         yAxisID: 'y',
       },
       {
         label: 'سلبي',
         data: NegativeH,
-        borderColor: 'rgba(255, 99, 132, 1)',
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: '#b794f6',
+        backgroundColor: '#b794f6',
         yAxisID: 'y',
       },
       {
         label: 'طبيعي',
         data: NatH,
-        borderColor: 'rgba(54, 162, 235, 1)',
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: '#c6f68d',
+        backgroundColor: '#c6f68d',
         yAxisID: 'y',
       }
     ]
@@ -638,10 +690,28 @@ function Hours_period(){
 
   // add event listeners for the buttons
   document.getElementById("1").addEventListener('click', () => {
+    // get all period container buttons
+    period_buttons = document.getElementsByClassName("period-button");
+      for (i = 0; i < period_buttons.length; i++) {
+        period_buttons[i].className = period_buttons[i].className.replace(" active", "");
+      }
+
+    // activate clicked button
+    event.currentTarget.className += " active";
+
     chart4.destroy();
     Month_period()
   });
   document.getElementById("0").addEventListener('click', () => {
+    // get all period container buttons
+    period_buttons = document.getElementsByClassName("period-button");
+      for (i = 0; i < period_buttons.length; i++) {
+        period_buttons[i].className = period_buttons[i].className.replace(" active", "");
+      }
+
+    // activate clicked button
+    event.currentTarget.className += " active";
+
     chart4.destroy();
     Days_period()
   });
@@ -660,9 +730,14 @@ function Hours_period(){
         label: 'Sentiment',
         data: reactions['sentiment'],
         backgroundColor: [
-        'rgb(255, 205, 86)',
-        'rgb(255, 99, 132)',
-        'rgb(54, 162, 235)'
+        '#80DEEA',
+        '#b794f6',
+        '#c6f68d'
+        ],
+        borderColor:[
+        '#80DEEA',
+        '#b794f6',
+        '#c6f68d'
         ],
         hoverOffset: 4
       }

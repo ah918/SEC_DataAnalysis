@@ -175,9 +175,9 @@ def dtm_df(text_column, task):
     max_df = int(text_column.shape[0]*0.3)
     min_df = int(text_column.shape[0]*0.01)
     
-    if task == 'sentiment':
+    if task == 'sentiment': # sentiment classfication
         filename = 'vectorizer1.sav'
-    else:
+    else:                   # topic classification
         filename = 'topicVectorizer.pickle'
 
     vectorizer = pickle.load(open(filename, 'rb'))
@@ -218,10 +218,9 @@ def word_cloud(dtm_df,path = None):
     if path:
         awc.to_file(path)
 
-'''___________________________________  Predict Sentiments  ____________________________________ '''
+'''___________________________________  Predict Sentiments & Topic Class  ____________________________________ '''
 
 def predict_sentiments(tweets_df, dtm):
-    
     
     filename = 'model1.sav'
     # load the model from disk
@@ -235,6 +234,7 @@ def predict_topic_class(tweets_df_cleaned_text):
     
     # load the model from disk
     topic_model = joblib.load('topicModel.sav')
+    # create document term matrix
     dtm = dtm_df(tweets_df_cleaned_text, 'topic')
     results = topic_model.predict(dtm)
     print('result', results)
@@ -251,7 +251,16 @@ import random
 from json import dumps, decoder, loads
 
 def get_reactions_dic(tweets_df):
-    # raection bar chart data set
+    '''
+    Create dictionary that summarize reactions [likes, tweets, replies] numbers for each sentiment [negative, neutral, positive]
+    
+    return: json rections dictionary {
+                                        'likes': int[negative, neutral, positive],
+                                        'replies': int[negative, neutral, positive],
+                                        'retweets': int[negative, neutral, positive]
+                                     }
+    '''
+    
     tweets_df_reactions = pd.DataFrame()
     tweets_df_reactions['nlikes']= tweets_df['nlikes']
     tweets_df_reactions['nretweets'] = tweets_df['nretweets']
@@ -271,13 +280,27 @@ def get_reactions_dic(tweets_df):
         'retweets': retweets_list
     }
 
+    # convert to json
     reactions = dumps(reactions_dic)
 
     return reactions
 
 def get_period_dic(tweets_df):
-    #read tweets_df
+    '''
+    Create dictionary that summarize number of tweets in three periods [hours, days, months] for each sentiment.
     
+    return: json periods dictionary {
+                                        'negativeDays': [int],
+                                        'neutralDays': [int],
+                                        'positiveDays': [int],
+                                        'negativeMonths': [int],
+                                        'neutralMonths': [int],
+                                        'positiveMonths': [int],
+                                        'negativeHours': [int],
+                                        'neutralHours': [int],
+                                        'positiveHours': [int]
+                                    }
+    '''
     periods_df = tweets_df
     tweets_df_negative = pd.DataFrame(periods_df[periods_df['sentiment']==-1])
     tweets_df_neutral = pd.DataFrame(periods_df[periods_df['sentiment']==0])
@@ -305,11 +328,16 @@ def get_period_dic(tweets_df):
         'positiveHours': tweets_df_positive_Hours_List
     }
 
+    # convert to json
     periods = dumps(periods_dic)
 
     return periods
 
 def getListDays(tweets_df_sen):
+    '''
+    count the number of tweets in each day in the recieved dataframe
+    return: list of length 7, contains counts of tweets in each day from Saturday to Sunday 
+    '''
     Full_Date = tweets_df_sen['date'].values.tolist()
     z=0
     newDay = []
@@ -325,6 +353,10 @@ def getListDays(tweets_df_sen):
     return days
     
 def getListMonths(tweets_df_sen):
+    '''
+    count the number of tweets in each month in the recieved dataframe
+    return: list of length 12, contains counts of tweets in each month from December to January
+    '''
     Full_Date = tweets_df_sen['date'].values.tolist()
     z=0
     newMon = []
@@ -337,6 +369,10 @@ def getListMonths(tweets_df_sen):
     return months
 
 def getListHours(tweets_df_sen):
+    '''
+    count the number of tweets in each hour in the recieved dataframe
+    return: list of length 24, contains counts of tweets in each hour from 00 to 24 
+    '''
     Full_Date = tweets_df_sen['date'].values.tolist()
     z=0
     newH = []
@@ -349,16 +385,85 @@ def getListHours(tweets_df_sen):
     return Hours
 
 def get_sentiment_dic(tweets_df):
+    '''
+    Create dictionary that count the number of tweets with each sentiment(positive, negative, neutral)
+    
+    return: json sentiment dictionary {
+                                        'sentiment': int[positive, negative, neutral]
+                                       }
+    '''
+
     sentiment_df = pd.DataFrame()
     sentiment_df['sentiment'] = tweets_df['sentiment']
-    sentiment_count = sentiment_df['sentiment'].value_counts()
     sentiment_dic = {
-        'sentiment': [tweets_df[tweets_df['sentiment']==1].shape[0], tweets_df[tweets_df['sentiment']==-1].shape[0], tweets_df[tweets_df['sentiment']==0].shape[0]] #int(sentiment_count[1])
+        'sentiment': [tweets_df[tweets_df['sentiment']==1].shape[0], tweets_df[tweets_df['sentiment']==-1].shape[0], tweets_df[tweets_df['sentiment']==0].shape[0]] 
     }
     return dumps(sentiment_dic)
 
+def get_tweets_dic(tweets_df_cleaned):
+    '''
+    Create dictionary of lists of tweets' text
+    
+    return: json tweets text lists dictionary {
+                                            'all_tweets': [str],
+                                            'neutral_tweets': [str],
+                                            'positive_tweets': [str],
+                                            'negative_tweets': [str]
+                                        }
+    '''
+    map = {
+        '1': 'انقطاع',
+        '2': 'خطر',
+        '3': 'فاتورة',
+        '4': 'أخرى'
+    }
+
+    tweets_df_classes = tweets_df_cleaned[['tweet_text', 'label']]
+    tweets_df_classes['label'] = tweets_df_classes['label'].map(map)
+    tweet_list = tweets_df_classes.values.tolist()
+    neutral_tweets = tweets_df_classes[tweets_df_cleaned['sentiment']==0].values.tolist()
+    positive_tweets = tweets_df_classes[tweets_df_cleaned['sentiment']==1].values.tolist()
+    negative_tweets = tweets_df_classes[tweets_df_cleaned['sentiment']==-1].values.tolist()
+
+    tweets_dic = {
+        'all_tweets': tweet_list,
+        'neutral_tweets': neutral_tweets,
+        'positive_tweets': positive_tweets,
+        'negative_tweets': negative_tweets
+    }
+
+    return tweets_dic
+
+def get_classes_dic(tweets_df_cleaned):
+    '''
+    Create dictionary of number of tweets in each topic class
+    
+    return: json topic dictionary {
+                                    'interuption': int,
+                                    'risk': int,
+                                    'bill': int,
+                                    'others': int
+                                  }
+    '''
+    interuption = tweets_df_cleaned[tweets_df_cleaned['label']=='1'].shape[0]
+    risk = tweets_df_cleaned[tweets_df_cleaned['label']=='2'].shape[0]
+    bill = tweets_df_cleaned[tweets_df_cleaned['label']=='3'].shape[0]
+    other = tweets_df_cleaned[tweets_df_cleaned['label']=='4'].shape[0]
+
+    classes_dic = {
+        'interuption': interuption,
+        'risk': risk,
+        'bill': bill,
+        'others': other
+    }
+    
+    return dumps(classes_dic)
+
 def create_request(request):
-    #takes request and return (Request model) opject
+    '''
+    Take http request of the user search request
+    return: request model object (user tweets collection request)
+    '''
     includeAll = request.POST['or_and']
     rangeOfsearch = request.POST.get('domain', 0)
     keyword = request.POST['keyword']
@@ -410,41 +515,3 @@ def create_request(request):
 
     return req
 
-def get_tweets_dic(tweets_df_cleaned):
-    map = {
-        '1': 'انقطاع',
-        '2': 'خطر',
-        '3': 'فاتورة',
-        '4': 'أخرى'
-    }
-
-    tweets_df_classes = tweets_df_cleaned[['tweet_text', 'label']]
-    tweets_df_classes['label'] = tweets_df_classes['label'].map(map)
-    tweet_list = tweets_df_classes.values.tolist()
-    neutral_tweets = tweets_df_classes[tweets_df_cleaned['sentiment']==0].values.tolist()
-    positive_tweets = tweets_df_classes[tweets_df_cleaned['sentiment']==1].values.tolist()
-    negative_tweets = tweets_df_classes[tweets_df_cleaned['sentiment']==-1].values.tolist()
-
-    tweets_dic = {
-        'all_tweets': tweet_list,
-        'neutral_tweets': neutral_tweets,
-        'positive_tweets': positive_tweets,
-        'negative_tweets': negative_tweets
-    }
-
-    return tweets_dic
-
-def get_classes_dic(tweets_df_cleaned):
-    interuption = tweets_df_cleaned[tweets_df_cleaned['label']=='1'].shape[0]
-    risk = tweets_df_cleaned[tweets_df_cleaned['label']=='2'].shape[0]
-    bill = tweets_df_cleaned[tweets_df_cleaned['label']=='3'].shape[0]
-    other = tweets_df_cleaned[tweets_df_cleaned['label']=='4'].shape[0]
-
-    classes_dic = {
-        'interuption': interuption,
-        'risk': risk,
-        'bill': bill,
-        'others': other
-    }
-    
-    return dumps(classes_dic)

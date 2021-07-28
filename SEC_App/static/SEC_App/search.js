@@ -74,3 +74,32 @@ function openTweets(evt, pageName) {
     document.getElementById(pageName).style.display = "block";
     evt.currentTarget.className += " active";
   }
+
+function tweets_filter(){
+  var formdata = $('#filter').serializeArray();
+  var dataObj = {};
+
+  $(formdata).each(function(i, field){
+    dataObj[field.name] = field.value;
+  });
+
+  var filter = dataObj['class'];
+
+  var tables = document.getElementsByClassName("tweets-table");
+
+  // Loop through all table rows, and hide those who don't match the search query
+  for (j=0; j<tables.length; j++ ){
+    var tr = tables[j].getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[2];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue == filter || filter == 'جميع المواضيع') {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+}

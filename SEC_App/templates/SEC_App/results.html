@@ -6,8 +6,8 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     {% load static %}
-    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=22">
-    <script src="{% static 'SEC_App/search.js' %}?version=1"></script>
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=23">
+    <script src="{% static 'SEC_App/search.js' %}?version=3"></script>
 
     <!-- Tajawal font -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -18,21 +18,23 @@
 
     <!-- jspdf -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     
     <title>النتائج والتحليلات</title>
 </head>
 <body> 
-  <h1><a href="{% url 'logout'%}?next={% url 'SEC_App:search' %}"><button class="light-button" style="text-align: right; margin-left: 33%; ">تسجيل الخروج</button></a>
-    النتائج والتحليلات <div id="home-button-div" style="display: inline-block;">
-    <a href="{% url 'SEC_App:search' %}"><img id='home-button' src="{% static 'SEC_App/home-page.svg' %}" alt="الصفحة الرئيسية" style='display: "inline-block"'></a>
-  </div>
+<h1><a href="{% url 'logout'%}?next={% url 'SEC_App:search' %}"><button class="light-button" style="text-align: right; display: inline-block; width: 33%;">تسجيل الخروج</button></a>
+  <div style="display: inline-block; width: 33%;">النتائج والتحليلات </div><div id="home-button-div" style="display: inline-block; width: 33%; text-align: left;">
+  <a href="{% url 'SEC_App:search' %}"><img id='home-button' src="{% static 'SEC_App/home-page.svg' %}" alt="الصفحة الرئيسية" style='display: "inline-block"'></a>
+</div>
 </h1>
   <div id='search-details'>
     <table>
       <tr>
         <th>كلمات البحث:</th>
         <td>{{req.presentationkeyword}}</td>
-        <td id="home-button-column"></td>
       </tr>
     </table>
     <table>
@@ -80,7 +82,7 @@
     <canvas id="reactions-bar-chart" width="30%" height="30%" style='display: "inline-block" !important;'></canvas>
   </div>
  </div>
-  <br><br><br>
+  
   <div id="week-days-container" class="chart-container" style='display: "inline-block"'>
     <div class="chart-title">الخط الزمني</div>
     <canvas id="myChart2" width="30%" height="30%" style='display: "inline-block" !important;'></canvas>
@@ -92,6 +94,7 @@
     <div class="chart-title">تصنيف التغريدات</div>
     <canvas id="classes-chart" width="30%" height="30%" style='display: "inline-block" !important;'></canvas>
   </div>
+  
   <div id="wordcloud-container" class="chart-container" style="text-align: center;">
     <div class="chart-title">سحابة الكلمات</div>
     <br><br>
@@ -102,18 +105,28 @@
   <div id='tweets-list' class="tabcontent">
      <!-- Tab links -->
     <div class="tab" style="width: 100%;">
-      <button class="tweets-tablinks" onClick="openTweets(event, 'all-tweets')" id="defaultOpenTweets">جميع التغريدات</button>
+      <button class="tweets-tablinks" onClick="openTweets(event, 'all-tweets')"  id="defaultOpenTweets">جميع التغريدات</button>
       <button class="tweets-tablinks" onClick="openTweets(event, 'positive-tweets')">التغريدات الإيجابية</button>
       <button class="tweets-tablinks" onClick="openTweets(event, 'negative-tweets')">التغريدات السلبية</button>
       <button class="tweets-tablinks" onClick="openTweets(event, 'neutral-tweets')">التغريدات الطبيعية</button>
     </div>
+    <form id = 'filter' action="" style="text-align: left; display: flex; justify-content: flex-end;">
+      <select style="margin: 15px; padding: 5px; font-family: 'Tajawal', sans-serif;" name="class" id="class" onchange="tweets_filter()">
+        <option value="جميع المواضيع">جميع المواضيع</option>
+        <option value="انقطاع">انقطاع</option>
+        <option value="خطر">خطر</option>
+        <option value="فاتورة">فاتورة</option>
+        <option value="أخرى">أخرى</option>
+      </select>
+    </form>
     <div id="all-tweets" class="tweets-tabcontent">
       <h2>جميع التغريدات</h2>
-      <table>
+      <table class="tweets-table">
       {% for tweet in tweets_dic.all_tweets %}
           <tr>
             <td class="counter">{{ forloop.counter }}</td>
-            <td>{{ tweet }}</td>
+            <td>{{ tweet.0 }}</td>
+            <td>{{ tweet.1 }}</td>
           </tr>
       {% endfor %}
       </table>
@@ -121,11 +134,12 @@
 
     <div id="positive-tweets" class="tweets-tabcontent">
       <h2> التغريدات الإيجابية</h2>
-      <table>
+      <table class="tweets-table">
       {% for tweet in tweets_dic.positive_tweets %}
           <tr>
             <td class="counter">{{ forloop.counter }}</td>
-            <td>{{ tweet }}</td>
+            <td>{{ tweet.0 }}</td>
+            <td>{{ tweet.1 }}</td>
           </tr>
       {% endfor %}
       </table>
@@ -133,11 +147,12 @@
 
     <div id="negative-tweets" class="tweets-tabcontent">
       <h2>التغريدات السلبية</h2>
-      <table>
+      <table class="tweets-table">
       {% for tweet in tweets_dic.negative_tweets %}
           <tr>
             <td class="counter">{{ forloop.counter }}</td>
-            <td>{{ tweet }}</td>
+            <td>{{ tweet.0 }}</td>
+            <td>{{ tweet.1 }}</td>
           </tr>
       {% endfor %}
       </table>
@@ -145,11 +160,12 @@
 
     <div id="neutral-tweets" class="tweets-tabcontent">
       <h2>التغريدات الطبيعية</h2>
-      <table>
+      <table class="tweets-table">
       {% for tweet in tweets_dic.neutral_tweets %}
           <tr>
             <td class="counter">{{ forloop.counter }}</td>
-            <td>{{ tweet }}</td>
+            <td>{{ tweet.0 }}</td>
+            <td>{{ tweet.1 }}</td>
           </tr>
       {% endfor %}
       </table>
@@ -839,96 +855,129 @@ function Hours_period(){
 var chart = new Chart(pie_ctx, config_pie, actions_pie)
 
 </script>
-<!-- <button id="btnPrint" onClick="generate()"> اطبع </h4> -->
 <script>
-  function generate()
-{
-  //Global Variable Declaration
-  var base64Img = null;
-  margins = {
-  top: 70,
-  bottom: 40,
-  left: 30,
-  width: 550
-  };
-  var pdf = new jsPDF('p', 'pt', 'a4');
-  pdf.setFontSize(18);
-  pdf.fromHTML(document.getElementById('pdf-container'), 
-      margins.left, // x coord
-      margins.top,
+  var classes = JSON.parse("{{ classes_dic|escapejs }}");
+  classes = [classes['interuption'], classes['risk'], classes['bill'], classes['others']]
+  var classes_ctx = document.getElementById("classes-chart");
+  //setup
+  const data_classes = {
+    labels: ['انقطاع', 'خطر', 'فاتورة', 'أخرى'],
+    datasets: [
       {
-      // y coord
-      width: margins.width// max width of content on PDF
-      },function(dispose) {
-      headerFooterFormatting(pdf)
-      }, 
-      margins);
-  
-  var iframe = document.createElement('iframe');
-  iframe.setAttribute('style','position:absolute;right:0; top:0; bottom:0; height:100%; width:650px; padding:20px;');
-  document.body.appendChild(iframe);
-  
-  iframe.src = pdf.output('datauristring');
-}
+        label: 'classes',
+        data: classes,
+        //data: [15, 5, 45, 35],
+        backgroundColor: [
+        '#80DEEA',
+        '#B0BEC5',
+        '#b794f6',
+        '#c6f68d'
+        ],
+        borderColor:[
+        '#80DEEA',
+        '#B0BEC5',
+        '#b794f6',
+        '#c6f68d'
+        ],
+        hoverOffset: 4
+      }
+    ]
+  };
 
-function headerFooterFormatting(doc)
-{
-    var totalPages  = doc.internal.getNumberOfPages();
-
-    for(var i = totalPages; i >= 1; i--)
-    { //make this page, the current page we are currently working on.
-        doc.setPage(i);      
-                      
-        header(doc);
-        
-        footer(doc, i, totalPages);
-        
+  //config
+  const config_classes = {
+  type: 'pie',
+  data: data_classes,
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: {
+          color: 'rgba(240, 248, 255, 1)',  
+          font: {
+            size: 14,
+            family: "'Tajawal', sans-serif",
+          }
+        }
+      },
+      title: {
+        display: true,
+        text: ''
+      }
     }
-};
+  },
+  };
 
-function header(doc)
-{
-    doc.setFontSize(30);
-    doc.setTextColor(40);
-    doc.setFontStyle('normal');
-  
-    if (base64Img) {
-       doc.addImage(base64Img, 'JPEG', margins.left, 10, 40,40);        
+  //actions
+  const actions_classes = [
+  {
+    name: 'Randomize',
+    handler(chart) {
+      chart.data.datasets.forEach(dataset => {
+        dataset.data = Utils.numbers({count: chart.data.labels.length, min: 0, max: 100});
+      });
+      chart.update();
     }
-      
-    doc.text("Report Header Template", margins.left + 50, 40 );
-  
-    doc.line(3, 70, margins.width + 43,70); // horizontal line
-};
+  },
+  {
+    name: 'Add Dataset',
+    handler(chart) {
+      const data = chart.data;
+      const newDataset = {
+        label: 'Dataset ' + (data.datasets.length + 1),
+        backgroundColor: [],
+        data: [],
+      };
 
-imgToBase64('wordcloud.jpg', function(base64) {
-    base64Img = base64; 
-});
+      for (let i = 0; i < data.labels.length; i++) {
+        newDataset.data.push(Utils.numbers({count: 1, min: 0, max: 100}));
 
-// You could either use a function similar to this or preconvert an image with, for example, http://dopiaza.org/tools/datauri
-// http://stackoverflow.com/questions/6150289/how-to-convert-image-into-base64-string-using-javascript
-function imgToBase64(url, callback, imgVariable) {
- 
- if (!window.FileReade) {
-     callback(null);
-     return;
- }
- var xhr = new XMLHttpRequest();
- xhr.responseType = 'blob';
- xhr.onload = function() {
-     var reader = new FileReader();
-     reader.onloadend = function() {
-   imgVariable = reader.result.replace('text/xml', 'image/jpeg');
-         callback(imgVariable);
-     };
-     reader.readAsDataURL(xhr.response);
- };
- xhr.open('GET', url);
- xhr.send();
-};
+        const colorIndex = i % Object.keys(Utils.CHART_COLORS).length;
+        newDataset.backgroundColor.push(Object.values(Utils.CHART_COLORS)[colorIndex]);
+      }
+
+      chart.data.datasets.push(newDataset);
+      chart.update();
+    }
+  },
+  {
+    name: 'Add Data',
+    handler(chart) {
+      const data = chart.data;
+      if (data.datasets.length > 0) {
+        data.labels.push('data #' + (data.labels.length + 1));
+
+        for (var index = 0; index < data.datasets.length; ++index) {
+          data.datasets[index].data.push(Utils.rand(0, 100));
+        }
+
+        chart.update();
+      }
+    }
+  },
+  {
+    name: 'Remove Dataset',
+    handler(chart) {
+      chart.data.datasets.pop();
+      chart.update();
+    }
+  },
+  {
+    name: 'Remove Data',
+    handler(chart) {
+      chart.data.labels.splice(-1, 1); // remove the label first
+
+      chart.data.datasets.forEach(dataset => {
+        dataset.data.pop();
+      });
+
+      chart.update();
+    }
+  }
+];
+var chart = new Chart(classes_ctx, config_classes, actions_classes)
 
 </script>
 </body>
 </html>
-
-<!-- return sum(range(0,max(nums)))-sum(nums) if sum(range(0,max(nums)))-sum(nums) != 0 else max(nums)+1 -->

@@ -16,7 +16,7 @@
 </head>
 <body>
     <div id="login-div">
-    <fieldset class="input_box">
+    <fieldset class="input_box" style="text-align: center;">
     {% block content %}
 
     {% if form.errors %}
@@ -33,7 +33,7 @@
     
     <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
-        <table class="login-content">
+        <table class="login-content" style="text-align: right; display: inline-flex; justify-content: center; margin-bottom: 30px;">
         <tr>
             <td>اسم المستخدم</td>
             <td>{{ form.username }}</td>

@@ -50,6 +50,7 @@ class Tweet(models.Model):
 class Analysis(models.Model):
     request = models.ForeignKey(Request, on_delete=CASCADE)
     tweets_list = models.JSONField()
+    classes_dic = models.JSONField(null=True, default=None)
     dtm = models.JSONField()
     reactions = models.JSONField()
     from_date = models.TextField()

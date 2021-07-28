@@ -1,8 +1,9 @@
 .input_box {
     background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
+    border-radius: 7px;
     border: 0px;
     display: inline-block;
+    padding: 15px;
 }
 
 #keyword {
@@ -71,37 +72,32 @@ label {
     color: aliceblue;
 }
 
-td, th{
-    border-bottom: 2px solid #f0f8ff;
-    padding: 5px;
+td{
+    border-bottom: 2px solid #121212;
+    padding: 10px;
 }
 table {
-    border-top: 2px solid #f0f8ff;
-    border-left: 2px solid #f0f8ff;
-    border-right: 2px solid #f0f8ff;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 7px;
 }
 
 #search-details table, #search-details th,  #search-details td{
     border: 0px; 
+    background-color: inherit;
 }
 
 #search-details {
     display: block;
-    /* border-top: 2px solid #f0f8ff;
-    border-bottom: 2px solid #f0f8ff; */
     padding-bottom: 20px;
 }
 
 h1 {
-    text-align: left;
+    text-align: center;
     background-color: rgba(255, 255, 255, 0.1); 
     border-radius: 7px;
     padding: 10px; 
 }
 
-#home-h1 {
-    text-align: center;
-}
 
 #loading-wrapper{
     display: none;
@@ -119,7 +115,7 @@ h1 {
     margin-top: 5%;
 } 
 
-.chart-container{ /* #myCahrt-container, #wordcloud-container, #pie-chart-container, #week-days-container{ */
+.chart-container{ 
     width:500px !important;
     height:500px !important;
     position: relative;
@@ -127,7 +123,6 @@ h1 {
     display: inline-block;
     font-size: x-large;
     font-weight: 600;
-    margin: 20px;
     text-align: center;
     margin: 60px;
     background-color: rgba(255, 255, 255, 0.1); 
@@ -185,11 +180,11 @@ p {
 font-size: 1.5rem;
 }
   
-#home-button, #home-button-div{
+#home-button{
     height: 33px;
     width: 33px;
     margin-left: 2%;
-    margin-right: 37%;
+    /* margin-right: 37%;  */
 }
 
 #home-button-column {

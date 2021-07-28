@@ -6,7 +6,7 @@
     <title>تحليل بيانات شركة الكهرباء</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     {% load static %}
-    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=10">
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=11">
     <script src="{% static 'SEC_App/search.js' %}?version=9" defer></script>
 
     <!-- jQuery Datepicker -->
@@ -47,11 +47,6 @@
         {% endif %}
         <a href="{% url 'logout'%}?next={{request.path}}"><button class="light-button">تسجيل الخروج</button></a><br>
     </div>
-    <!-- <h1>النتائج والتحليلات</h1><div id="home-button-div" style="display: inline-block;">
-        <a href="{% url 'logout'%}?next={{request.path}}">تسجيل الخروج</a>
-        <img id='home-button' src="{% static 'SEC_App/user.svg' %}" alt="{{ user.get_username }}" style='display: "inline-block"'>
-        <span>{{ user.get_username }}</span>
-    </div></h1> -->
     <div id="input-box-wrapper">
         <fieldset class='input_box'>
             <legend><h2>أساسي</h2></legend>

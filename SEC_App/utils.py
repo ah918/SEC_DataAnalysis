@@ -247,7 +247,6 @@ from django.contrib.auth.models import User
 from .models import Request
 from django.utils import timezone
 import datetime
-import random
 from json import dumps, decoder, loads
 
 def get_reactions_dic(tweets_df):

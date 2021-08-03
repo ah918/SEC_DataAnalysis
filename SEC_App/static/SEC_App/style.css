@@ -181,8 +181,8 @@ font-size: 1.5rem;
 }
   
 #home-button{
-    height: 33px;
-    width: 33px;
+    height: 70px;
+    /* width: 33px; */
     margin-left: 2%;
     /* margin-right: 37%;  */
 }

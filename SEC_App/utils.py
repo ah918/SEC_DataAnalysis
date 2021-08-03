@@ -176,7 +176,7 @@ def dtm_df(text_column, task):
     min_df = int(text_column.shape[0]*0.01)
     
     if task == 'sentiment': # sentiment classfication
-        filename = 'vectorizer1.sav'
+        filename = 'sentimentVectorizer.pickle'
     else:                   # topic classification
         filename = 'topicVectorizer.pickle'
 
@@ -187,6 +187,7 @@ def dtm_df(text_column, task):
     vectorizer_df = vectorizer.transform(text_column)
     dtm_df = pd.DataFrame(vectorizer_df.toarray(), columns=vectorizer.get_feature_names())
     dtm_df.index = text_column.index
+    print(dtm_df)
     return dtm_df
 
 
@@ -220,25 +221,20 @@ def word_cloud(dtm_df,path = None):
 
 '''___________________________________  Predict Sentiments & Topic Class  ____________________________________ '''
 
-def predict_sentiments(tweets_df, dtm):
+def predict_sentiments(dtm):
     
-    filename = 'model1.sav'
+    filename = 'sentimentModel.sav'
     # load the model from disk
     loaded_model = joblib.load(filename)
     result = loaded_model.predict(dtm)
     
-    tweets_df['sentiment']=result
-    return tweets_df
+    return result
 
-def predict_topic_class(tweets_df_cleaned_text):
+def predict_topic_class(dtm):
     
     # load the model from disk
     topic_model = joblib.load('topicModel.sav')
-    # create document term matrix
-    dtm = dtm_df(tweets_df_cleaned_text, 'topic')
     results = topic_model.predict(dtm)
-    print('result', results)
-    
     return results
 
 '''___________________________________ Views Helper Functions  ____________________________________ '''
@@ -265,9 +261,9 @@ def get_reactions_dic(tweets_df):
     tweets_df_reactions['nretweets'] = tweets_df['nretweets']
     tweets_df_reactions['nreplies'] = tweets_df['nreplies']
     tweets_df_reactions['sentiment'] = tweets_df['sentiment']
-    tweets_df_reactions_negative = pd.DataFrame(tweets_df_reactions[tweets_df_reactions['sentiment']==-1])
-    tweets_df_reactions_neutral = pd.DataFrame(tweets_df_reactions[tweets_df_reactions['sentiment']==0])
-    tweets_df_reactions_positive = pd.DataFrame(tweets_df_reactions[tweets_df_reactions['sentiment']==1])
+    tweets_df_reactions_negative = pd.DataFrame(tweets_df_reactions[tweets_df_reactions['sentiment']=='-1'])
+    tweets_df_reactions_neutral = pd.DataFrame(tweets_df_reactions[tweets_df_reactions['sentiment']=='0'])
+    tweets_df_reactions_positive = pd.DataFrame(tweets_df_reactions[tweets_df_reactions['sentiment']=='1'])
 
     likes_list = [int(np.sum(tweets_df_reactions_negative['nlikes'])), int(np.sum(tweets_df_reactions_neutral['nlikes'])), int(np.sum(tweets_df_reactions_positive['nlikes'])) ]
     replies_list = [int(np.sum(tweets_df_reactions_negative['nreplies'])), int(np.sum(tweets_df_reactions_neutral['nreplies'])), int(np.sum(tweets_df_reactions_positive['nreplies'])) ]
@@ -301,9 +297,9 @@ def get_period_dic(tweets_df):
                                     }
     '''
     periods_df = tweets_df
-    tweets_df_negative = pd.DataFrame(periods_df[periods_df['sentiment']==-1])
-    tweets_df_neutral = pd.DataFrame(periods_df[periods_df['sentiment']==0])
-    tweets_df_positive = pd.DataFrame(periods_df[periods_df['sentiment']==1])
+    tweets_df_negative = pd.DataFrame(periods_df[periods_df['sentiment']=='-1'])
+    tweets_df_neutral = pd.DataFrame(periods_df[periods_df['sentiment']=='0'])
+    tweets_df_positive = pd.DataFrame(periods_df[periods_df['sentiment']=='1'])
     ########
     tweets_df_negative_Day_List = getListDays(tweets_df_negative)
     tweets_df_neutral_Day_List = getListDays(tweets_df_neutral)
@@ -395,7 +391,7 @@ def get_sentiment_dic(tweets_df):
     sentiment_df = pd.DataFrame()
     sentiment_df['sentiment'] = tweets_df['sentiment']
     sentiment_dic = {
-        'sentiment': [tweets_df[tweets_df['sentiment']==1].shape[0], tweets_df[tweets_df['sentiment']==-1].shape[0], tweets_df[tweets_df['sentiment']==0].shape[0]] 
+        'sentiment': [tweets_df[tweets_df['sentiment']=='1'].shape[0], tweets_df[tweets_df['sentiment']=='-1'].shape[0], tweets_df[tweets_df['sentiment']=='0'].shape[0]] 
     }
     return dumps(sentiment_dic)
 
@@ -420,9 +416,9 @@ def get_tweets_dic(tweets_df_cleaned):
     tweets_df_classes = tweets_df_cleaned[['tweet_text', 'label']]
     tweets_df_classes['label'] = tweets_df_classes['label'].map(map)
     tweet_list = tweets_df_classes.values.tolist()
-    neutral_tweets = tweets_df_classes[tweets_df_cleaned['sentiment']==0].values.tolist()
-    positive_tweets = tweets_df_classes[tweets_df_cleaned['sentiment']==1].values.tolist()
-    negative_tweets = tweets_df_classes[tweets_df_cleaned['sentiment']==-1].values.tolist()
+    neutral_tweets = tweets_df_classes[tweets_df_cleaned['sentiment']=='0'].values.tolist()
+    positive_tweets = tweets_df_classes[tweets_df_cleaned['sentiment']=='1'].values.tolist()
+    negative_tweets = tweets_df_classes[tweets_df_cleaned['sentiment']=='-1'].values.tolist()
 
     tweets_dic = {
         'all_tweets': tweet_list,
@@ -513,4 +509,3 @@ def create_request(request):
     req = Request(user=request.user, keyword=keyword, period_start=period_start, period_end=period_end, time_start=time_start, time_end=time_end, rangeOfsearch=rangeOfsearch, date_time=date_time, includeAll=includeAll)
 
     return req
-

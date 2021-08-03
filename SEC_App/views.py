@@ -86,13 +86,14 @@ def analysis(request):
     #Clean text
     tweets_df_cleaned_text = tweets_df_cleaned['tweet_text'].apply(lambda text : cleanTxt(text,Emoji_Dict(),stopwords_set()))
     #Preprocessing text: create document term matrix 
-    dtm = dtm_df(tweets_df_cleaned_text, 'sentiment')
+    dtm_sentiment = dtm_df(tweets_df_cleaned_text, 'sentiment')
+    dtm_topic = dtm_df(tweets_df_cleaned_text, 'topic')
     #(create+show,save:optional) arabic word cloud 
-    word_cloud(dtm, path='SEC_App/static/SEC_App/wordcloud.png')
+    word_cloud(dtm_topic, path='SEC_App/static/SEC_App/wordcloud.png')
 
     # *** sentiment and topic predictions ***
-    tweets_df_cleaned = predict_sentiments(tweets_df_cleaned, dtm)
-    tweets_df_cleaned['label'] = predict_topic_class(tweets_df_cleaned_text)
+    tweets_df_cleaned['sentiment'] = predict_sentiments(dtm_sentiment)
+    tweets_df_cleaned['label'] = predict_topic_class(dtm_topic)
 
     # *** prepare the charts data ****
     reactions = get_reactions_dic(tweets_df_cleaned)
@@ -102,7 +103,7 @@ def analysis(request):
     classes_dic = get_classes_dic(tweets_df_cleaned)
 
     #create analysis object (charts data for faster recreation) 
-    req.analysis_set.create(request=req, tweets_list=dumps(tweets_dic), classes_dic=classes_dic, dtm=dtm.to_json(), reactions=reactions, from_date=from_date, 
+    req.analysis_set.create(request=req, tweets_list=dumps(tweets_dic), classes_dic=classes_dic, dtm=dtm_topic.to_json(), reactions=reactions, from_date=from_date, 
                             to_date=to_date, period_data=period_data, sentiment_data=sentiment_data, 
                             num_tweets=tweets_df_cleaned.shape[0])
 

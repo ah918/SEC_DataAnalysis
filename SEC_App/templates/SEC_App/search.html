@@ -6,7 +6,7 @@
     <title>تحليل بيانات شركة الكهرباء</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     {% load static %}
-    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=11">
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=12">
     <script src="{% static 'SEC_App/search.js' %}?version=9" defer></script>
 
     <!-- jQuery Datepicker -->
@@ -35,7 +35,7 @@
 <div id='loading-wrapper-h3'>جمع وتحليل التغريدات</div>
 <body>
     <div id='full-page'>
-    <h1 id='home-h1'>تحليل تغريدات شركة الكهرباء</h1>
+    <h1 id='home-h1' style="display: flex; align-items: center; justify-content: center;">تحليل تغريدات شركة الكهرباء <img id='home-button' src="{% static 'SEC_App/logo-white.png' %}" alt="الصفحة الرئيسية" style='display: "inline-block"; margin-right: 20px; margin-left: 0px;'></h1>
     <div id='user-div' style="text-align: right; margin-top: 100px; margin-left: 15px;">
         <div id="user-info-div" style="display: flex; align-items: center;">
             <img src="{% static 'SEC_App/user.svg' %}?version=2" style="width: 45px;" alt={{ user.get_username }}>
@@ -50,8 +50,9 @@
     <div id="input-box-wrapper">
         <fieldset class='input_box'>
             <legend><h2>أساسي</h2></legend>
-            <form action="{% url 'SEC_App:analysis' %}"  method="post" onSubmit="loadingPage()">
+            <form autocomplete="off" action="{% url 'SEC_App:analysis' %}"  method="post" onSubmit="loadingPage()">
                 {% csrf_token %}
+                <input autocomplete="false" name="hidden" type="text" style="display:none;">
                 <label for='keyword'>كلمات البحث</label>
                 <input list="keywords" id="keyword" name="keyword" onkeydown="keywords()" placeholder="مثال: كهرباء فاتورة انقطاع ..." size="37"/>
                 <datalist id='keywords'>

@@ -6,7 +6,7 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     {% load static %}
-    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=23">
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'SEC_App/style.css' %}?version=24">
     <script src="{% static 'SEC_App/search.js' %}?version=3"></script>
 
     <!-- Tajawal font -->
@@ -25,9 +25,9 @@
     <title>النتائج والتحليلات</title>
 </head>
 <body> 
-<h1><a href="{% url 'logout'%}?next={% url 'SEC_App:search' %}"><button class="light-button" style="text-align: right; display: inline-block; width: 33%;">تسجيل الخروج</button></a>
-  <div style="display: inline-block; width: 33%;">النتائج والتحليلات </div><div id="home-button-div" style="display: inline-block; width: 33%; text-align: left;">
-  <a href="{% url 'SEC_App:search' %}"><img id='home-button' src="{% static 'SEC_App/home-page.svg' %}" alt="الصفحة الرئيسية" style='display: "inline-block"'></a>
+<h1 style="display: flex; align-items: center; justify-content:space-evenly;"><a href="{% url 'logout'%}?next={% url 'SEC_App:search' %}" style="text-align: right; display: inline-block; width: 33%; "><button class="light-button" >تسجيل الخروج</button></a>
+  <div style="display: inline-block; width: 33%; ">النتائج والتحليلات </div><div id="home-button-div" style="display: inline-block; width: 33%; text-align: left; justify-content: flex-end;">
+  <a href="{% url 'SEC_App:search' %}"><img id='home-button' src="{% static 'SEC_App/logo-white.png' %}" alt="الصفحة الرئيسية" style='display: "inline-block"'></a>
 </div>
 </h1>
   <div id='search-details'>

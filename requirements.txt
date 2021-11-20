@@ -7,3 +7,4 @@ twint
 pyarabic==0.6.10
 scikit-learn==0.24.2
 ar-wordcloud==0.0.4
+nest_asyncio

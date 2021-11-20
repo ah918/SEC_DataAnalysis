@@ -25,8 +25,9 @@ pip install -r requirements.txt
 3. setup django project
 ```python
 # create SQLite databse, run migrations
-manage.py migrate
+python manage.py migrate
 
-# Run Django dev server
-manage.py runserver
+# run Django dev server
+python manage.py runserver
 ```
+4. development server starts by default at http://127.0.0.1:8000/

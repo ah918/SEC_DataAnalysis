@@ -13,16 +13,16 @@ Tweets sentiment analysis web application that collects tweets for Saudi Electri
 - ar-wordcloud==0.0.4
 
 ### Installation
-1. clone SEC_DataAnalysis repository
+1. Clone SEC_DataAnalysis repository
 ```python
 git clone https://github.com/ah918/SEC_DataAnalysis.git
 ```
-2. install requirements
+2. Install requirements
 ```python
 cd SEC_DataAnalysis
 pip install -r requirements.txt
 ```
-3. setup django project
+3. Setup django project
 ```python
 # create SQLite databse, run migrations
 python manage.py migrate
@@ -30,4 +30,4 @@ python manage.py migrate
 # run Django dev server
 python manage.py runserver
 ```
-4. development server starts by default at http://127.0.0.1:8000/
+4. Development server starts by default at http://127.0.0.1:8000/

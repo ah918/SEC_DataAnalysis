@@ -14,11 +14,19 @@ Tweets sentiment analysis web application that collects tweets for Saudi Electri
 
 ### Installation
 1. clone SEC_DataAnalysis repository
-```
+```python
 git clone https://github.com/ah918/SEC_DataAnalysis.git
 ```
 2. install requirements
-```
+```python
+cd SEC_DataAnalysis
 pip install -r requirements.txt
 ```
-3. 
+3. setup django project
+```python
+# create SQLite databse, run migrations
+manage.py migrate
+
+# Run Django dev server
+manage.py runserver
+```
